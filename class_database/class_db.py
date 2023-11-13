@@ -1,9 +1,11 @@
 import os
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS  # Import CORS extension
 import json
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ucla_classes.db'
 db = SQLAlchemy(app)
 
@@ -32,11 +34,11 @@ if __name__ == '__main__':
         json_path = os.path.join(os.path.dirname(__file__), '../scrape/ucla_classes.json')
         with open(json_path, 'r') as file:
             data = json.load(file)
-        
+
         # Insert or update data into the database
         for department, classes in data.items():
             for class_info in classes:
-                existing_class = Class.query.get((class_info['id'], department))
+                existing_class = db.session.query(Class).get((class_info['id'], department))
                 if existing_class:
                     # Update existing record
                     existing_class.name_description = class_info['name_description']
