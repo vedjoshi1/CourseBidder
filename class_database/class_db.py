@@ -10,6 +10,7 @@ db = SQLAlchemy(app)
 # SQLAlchemy model class for Class
 class Class(db.Model):
     id = db.Column(db.String(50), primary_key=True)
+    department = db.Column(db.String(50), primary_key=True)
     name_description = db.Column(db.String(255))
     name = db.Column(db.String(255))
 
@@ -17,7 +18,7 @@ class Class(db.Model):
 @app.route('/api/classes', methods=['GET'])
 def get_classes():
     classes = Class.query.all()
-    class_list = [{'id': c.id, 'name_description': c.name_description, 'name': c.name} for c in classes]
+    class_list = [{'id': c.id, 'department': c.department, 'name_description': c.name_description, 'name': c.name} for c in classes]
     return jsonify({'classes': class_list})
 
 if __name__ == '__main__':
@@ -35,7 +36,7 @@ if __name__ == '__main__':
         # Insert or update data into the database
         for department, classes in data.items():
             for class_info in classes:
-                existing_class = db.session.get(Class, class_info['id'])
+                existing_class = Class.query.get((class_info['id'], department))
                 if existing_class:
                     # Update existing record
                     existing_class.name_description = class_info['name_description']
@@ -43,8 +44,9 @@ if __name__ == '__main__':
                 else:
                     # Insert new record
                     new_class = Class(
-                        name_description=class_info['name_description'],
                         id=class_info['id'],
+                        department=department,
+                        name_description=class_info['name_description'],
                         name=class_info['name']
                     )
                     db.session.add(new_class)
