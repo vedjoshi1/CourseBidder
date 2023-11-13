@@ -87,15 +87,7 @@ def pull_url(url):
     return (classes)
 
 
-
-
-
-
-
 sAreas, abv = get_class_codes()
-
-
-
 
 
 departments = {}
