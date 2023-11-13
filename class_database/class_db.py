@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS  # Import CORS extension
 import json
@@ -22,6 +22,44 @@ def get_classes():
     classes = Class.query.all()
     class_list = [{'id': c.id, 'department': c.department, 'name_description': c.name_description, 'name': c.name} for c in classes]
     return jsonify({'classes': class_list})
+
+
+
+@app.route('/api/search', methods=['GET'])
+def searchClasses():
+    class_id_query = request.args.get('class_id')
+    
+    # Get the search query for department from the request parameters (required)
+    department_query = request.args.get('department')
+
+    # If no department query is provided, return an error response
+    if not department_query:
+        return jsonify({'error': 'Please provide a department for the search'}), 400
+
+    # Set up the filters
+    department_filter = Class.department.ilike(f'%{department_query}%')
+
+    if class_id_query:
+        class_id_filter = Class.id.ilike(f'%{class_id_query}%')
+        results = Class.query.filter(class_id_filter, department_filter).all()
+    else:
+        results = Class.query.filter(department_filter).all()
+
+    # Format the results as a list of dictionaries
+    search_results = [{'id': result.id, 'department': result.department, 'name_description': result.name_description, 'name': result.name} for result in results]
+
+    # Return the search results in JSON format
+    return jsonify({'search_results': search_results})
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == '__main__':
     # Move database-related code inside the application context
@@ -57,4 +95,4 @@ if __name__ == '__main__':
         db.session.commit()
 
     # Run the application
-    app.run(debug=False)
+    app.run(debug=True)
