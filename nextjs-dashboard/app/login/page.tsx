@@ -1,10 +1,23 @@
+// page.tsx
+'use client'
+// Import necessary modules/components
 import AcmeLogo from '@/app/ui/acme-logo';
 import LoginForm from '@/app/ui/login-form';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import the useRouter hook
 
 export default function LoginPage() {
+
+  const router = useRouter();
+
+  const handleLogin = () => {
+    // Navigate to the dashboard page or perform other actions
+    console.log('Login successful! Navigate to the dashboard.');
+    router.push('/dashboard');
+  };
+
   return (
     <main className="flex items-center justify-center md:h-screen">
       <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
@@ -13,13 +26,7 @@ export default function LoginPage() {
             <AcmeLogo />
           </div>
         </div>
-        <LoginForm />
-        <Link
-            href="/dashboard"
-            className="flex items-center gap-5 self-start rounded-lg bg-blue-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-400 md:text-base"
-          >
-            <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+        <LoginForm onLogin={handleLogin} />
       </div>
     </main>
   );
