@@ -1,3 +1,4 @@
+'use client'
 import { useState, SyntheticEvent } from 'react'; // Import SyntheticEvent
 import { lusitana } from '@/app/ui/fonts';
 import {
@@ -6,21 +7,19 @@ import {
   ExclamationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from './button';
+import { Button } from '@/app/ui/button';
 
-import Link from 'next/link';
+// Define prop types for SignUpPage component
+interface SignUpPageProps {
+    onSignUp: () => void; // Define onLogin prop as a function that takes no arguments and returns void
+  }
 
-// Define prop types for LoginForm component
-interface LoginFormProps {
-  onLogin: () => void; // Define onLogin prop as a function that takes no arguments and returns void
-}
-
-export default function LoginForm({ onLogin }: LoginFormProps) {
+export default function SignUpPage({ onSignUp }:SignUpPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e: SyntheticEvent) => {
+  const handleSignUp = (e: SyntheticEvent) => {
     e.preventDefault();
 
     // Perform email and password validation
@@ -34,8 +33,7 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
       return;
     }
 
-    // If validation passes, invoke the onLogin callback
-    onLogin();
+    onSignUp();
   };
 
   // Add onChange handlers to update state on input change
@@ -48,10 +46,10 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   };
 
   return (
-    <form className="space-y-3" onSubmit={handleLogin} action="/dashboard">
+    <form className="space-y-3" onSubmit={handleSignUp} action="/dashboard">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-          Please log in to continue.
+          Please sign up to continue.
         </h1>
         <div className="w-full">
           <div>
@@ -107,24 +105,11 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
           {error}
         </div>
       )}
-      {/* Login button */}
       <div className="flex items-center justify-end mt-6">
         <Button type="submit"> {/* Add type="submit" to the Button component */}
-          <span>Login</span>
+          <span>Sign Up</span>
           <ArrowRightIcon className="w-5 md:w-6" />
         </Button>
-      </div>
-      {/* Sign Up button */}
-      <h1>Don't have an account? <strong>Sign up!</strong></h1>
-      <div className="flex items-center justify-end mt-6">
-        <Link href="/signup"> {/* Adjust the path to your signup page */}
-          <a>
-            <Button onClick={() => console.log('Sign Up clicked')}>
-              <span>Sign Up</span>
-              <ArrowRightIcon className="w-5 md:w-6" />
-            </Button>
-          </a>
-        </Link>
       </div>
     </form>
   );

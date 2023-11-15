@@ -2,16 +2,16 @@
 'use client'
 // Import necessary modules/components
 import AcmeLogo from '@/app/ui/acme-logo';
-import LoginForm from '@/app/ui/login-form';
+import SignUpPage from '@/app/ui/signup-form'
 import { useRouter } from 'next/navigation'; // Import the useRouter hook
 
-export default function LoginPage() {
+export default function SignUp() {
 
   const router = useRouter();
 
-  const handleLogin = () => {
+  const handleSignUp = () => {
     // Navigate to the dashboard page or perform other actions
-    console.log('Login successful! Navigate to the dashboard.');
+    console.log('Sign up successful! Navigate to the dashboard.');
     router.push('/dashboard');
   };
 
@@ -23,7 +23,7 @@ export default function LoginPage() {
             <AcmeLogo />
           </div>
         </div>
-        <LoginForm onLogin={handleLogin} />
+        <SignUpPage onSignUp={handleSignUp} />
       </div>
     </main>
   );
