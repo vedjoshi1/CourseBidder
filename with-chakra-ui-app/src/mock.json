@@ -1,0 +1,53 @@
+[
+    {
+      "id": 1,
+      "full_name": "Wendall Gripton",
+      "hours_since": 12,
+      "asking_price": 24
+    },
+
+    {
+    "id": 2,
+    "full_name": "Marlene Grieskamp",
+    "hours_since": 18,
+    "asking_price": 122
+    },
+
+    {
+    "id": 3,
+    "full_name": "Eric Zhou",
+    "hours_since": 3,
+    "asking_price": 15
+    },
+
+    {
+    "id": 4,
+    "full_name": "Mukjer Pal",
+    "hours_since": 10,
+    "asking_price": 123.2
+    },
+
+    {
+      "id": 5,
+      "full_name": "Kareem Dibs",
+      "hours_since": 10,
+      "asking_price": 0.01
+    },
+
+    {
+      "id": 6,
+      "full_name": "Justin Humphreys",
+      "hours_since": 125,
+      "asking_price": 123123
+    },
+
+    {
+      "id": 7,
+      "full_name": "Jane Smith",
+      "hours_since": 18,
+      "asking_price": 12.2
+    }
+
+
+    
+]
