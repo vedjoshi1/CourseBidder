@@ -18,6 +18,7 @@ import {
     Spacer,
   } from '@chakra-ui/react'
 
+  import {ArrowUpDownIcon} from "@chakra-ui/icons"
   import { useState } from 'react';
 
   interface columns {
@@ -43,11 +44,11 @@ import {
         };
 
         return (
-            <Thead>
+            <Thead width="100%">
                 <Tr>
                     {columns.map(( {label, accessor } ) => {
                         return <Th key={accessor} onClick={() => handleSortingChange(accessor)}>
-                                    {label} 
+                                    {label} <ArrowUpDownIcon />
                                 </Th>;
                     })}
                 </Tr>

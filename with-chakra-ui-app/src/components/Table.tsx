@@ -17,17 +17,22 @@ import {
     Box,
     Spacer,
   } from '@chakra-ui/react'
-  import { useState } from 'react';
+
+  import { useState, useEffect } from 'react';
 
   import TableHead from './TableHead';
   import TableBody from './TableBody';
   import mock from "../mock.json";
 
+  import { readFile } from 'fs';
+  // simulate making an API request, instead just read the file
 
 
   const TableParent: React.FC = () => {
     
     const [tableData, setTableData] = useState(mock);
+
+    
     
     const columns = [
         {label: "Username", accessor: "full_name"},
@@ -50,9 +55,9 @@ import {
     };
 
     return (
-        <Table variant='simple'>
+        <Table variant='simple' >
             <TableCaption> Current Listings for <strong> CS35L </strong> </TableCaption>
-            <TableHead columns={columns} handleSorting={handleSorting} />
+            <TableHead width="100%" columns={columns} handleSorting={handleSorting} />
             <TableBody tableData={tableData} columns={columns} />
         </Table>
     )

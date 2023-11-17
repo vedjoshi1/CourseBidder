@@ -46,6 +46,13 @@
       "full_name": "Jane Smith",
       "hours_since": 18,
       "asking_price": 12.2
+    },
+
+    {
+      "id": 8,
+      "full_name": "Aarav D",
+      "hours_since": 0.1,
+      "asking_price": 345
     }
 
 
