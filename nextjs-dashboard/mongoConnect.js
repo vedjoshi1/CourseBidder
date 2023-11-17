@@ -71,7 +71,6 @@ async function addUser(usrnm, pwd) {
       await client.close();
     }
   }
- 
 
 
   async function searchClass(department, id) {
@@ -114,4 +113,55 @@ async function addUser(usrnm, pwd) {
     }
   }
   addUser("atijmahesh", "PENISPENISPENIS");
+
+const fs = require('fs');
+const path = require('path');
+async function importJsonToMongoDB() {
+  const dbName = 'CourseBidder';
+  const collectionName = 'Classes';
+  const uri = 'mongodb+srv://coursebidder:Generativeai1@coursebidder.gb7lsik.mongodb.net/';
+  const filePath = path.join(__dirname, 'scrape', 'ucla_classes.json');
+
+  // Read the JSON file
+  const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+  // Ensure jsonData is an object
+  if (!Object.keys(jsonData).length) {
+    throw new Error('JSON data must be an object with department keys.');
+  }
+
+  // Connect to MongoDB
+  const client = new MongoClient(uri); // Remove deprecated options
+
+  try {
+    await client.connect();
+
+    // Select the database and collection
+    const database = client.db(dbName);
+    const collection = database.collection(collectionName);
+
+    // Iterate through departments and classes
+    for (const department in jsonData) {
+      const departmentClasses = jsonData[department];
+
+      for (const classData of departmentClasses) {
+        const classDocument = {
+          departmentId: `${department} ${classData.id}`, // Combine department and ID
+          name: classData.name,
+        };
+
+        // Insert each class as a separate document
+        await collection.insertOne(classDocument);
+      }
+    }
+
+    console.log('Data imported successfully.');
+  } finally {
+    await client.close();
+  }
+}
+
+// Call the function to import JSON to MongoDB
+importJsonToMongoDB();
+
   
