@@ -54,6 +54,21 @@ import {
         
     };
 
+    useEffect(() => {
+        // Simulate making an API request, instead just read the file
+        const fetchData = async () => {
+          try {
+            const response = await fetch('with-chakra-ui-app/src/mock.json'); // Update the path accordingly
+            const data = await response.json();
+            setTableData(data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        fetchData();
+      }, []);
+
     return (
         <Table variant='simple' >
             <TableCaption> Current Listings for <strong> CS35L </strong> </TableCaption>

@@ -13,14 +13,12 @@ const Login = () => {
     <VStack>
       <Input placeholder="Username" mb={3} />
       <Input type="password" placeholder="Password" mb={3} />
-      <Box tp={100} bp={10}>
-        Sign up.
-      </Box>
       <Button colorScheme="blue" size="md" width="full">
         Login
       </Button>
-
-
+      <Button colorScheme="blue" size="md" width="full">
+        Sign up
+      </Button>
     </VStack>
       
     </Box>
@@ -28,4 +26,4 @@ const Login = () => {
 
 };
 
-export default Login; 
+export default Login;
