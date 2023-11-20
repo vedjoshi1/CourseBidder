@@ -1,6 +1,7 @@
 'use client'
 import { useState, SyntheticEvent } from 'react'; // Import SyntheticEvent
 import { Box, Input, Button, VStack } from "@chakra-ui/react";
+import axios from 'axios';
 import Link from 'next/link';
 
 // Define prop types for SignUpPage component
@@ -13,7 +14,7 @@ export default function SignUpPage({ onSignUp }:SignUpPageProps) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSignUp = (e: SyntheticEvent) => {
+  const handleSignUp = async (e: SyntheticEvent) => {
     e.preventDefault();
 
     // Perform email and password validation
@@ -27,7 +28,17 @@ export default function SignUpPage({ onSignUp }:SignUpPageProps) {
       return;
     }
 
-    onSignUp();
+    try {
+      // Make a POST request to the signup API endpoint
+      const response = await axios.post('/api/signupbackend', { username: email, password });
+
+      console.log(response.data); // Handle success
+
+      // If the signup is successful, you can navigate to another page
+      onSignUp();
+    } catch (error) {
+      console.error('Error signing up:', error); // Handle error
+    }
   };
 
   // Add onChange handlers to update state on input change
