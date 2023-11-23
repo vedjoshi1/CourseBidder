@@ -227,11 +227,15 @@ async function addUser(usrnm, pwd) {
     });
     
   */
+ var classInformation;
 
 let classInfo = getAllListings('COM SCI M152A')
     .then(classInfo => {
       console.log(classInfo);
+      classInformation = classInfo;
     })
     .catch(error => {
       console.error("Error:", error);
     });
+
+
