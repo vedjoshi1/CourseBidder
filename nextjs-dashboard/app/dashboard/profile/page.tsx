@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/app/ui/button';
 import styles from '@/app/ui/profilepage.module.css';
+import pfp from './pfp.jpg'
 
 export default function App(){
 
@@ -37,7 +38,7 @@ function convertFile(files: FileList|null) {
     name: 'John Doe',
     email: 'john.doe@example.com',
     phoneNumber: '', // New fiel
-  
+    
 
   });
   
@@ -67,8 +68,8 @@ function convertFile(files: FileList|null) {
             <img
               src={filebase64}
               style={{
-                width: "200px",
-                height: "200px",
+                width: "125px",
+                height: "125px",
                 borderRadius: "50%",
                 objectFit: "cover",
                 border: "2px solid black",
@@ -79,15 +80,17 @@ function convertFile(files: FileList|null) {
       ) : (
         <div>
           {/* Display the blank circle here */}
-          <div
+          <br></br>
+          <img
+            src = {pfp.src}
             style={{
-              width: "200px",
-              height: "200px",
+              width: "125px",
+              height: "125px",
               borderRadius: "50%",
               backgroundColor: "transparent",
               border: "2px solid black",
             }}
-          ></div>
+          ></img>
         </div>
       )}
     </form>
