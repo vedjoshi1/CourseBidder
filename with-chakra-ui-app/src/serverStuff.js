@@ -4,7 +4,8 @@ const path = require("path");
 const helmet = require("helmet");
 const cookieparser = require("cookie-parser");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
+const axios = require("axios");
 //------------modules used-------------//
 
 const app = express();
@@ -22,6 +23,16 @@ const userSchema = new mongoose.Schema({
     pass: { type: String, required: true },
 })
 const User = new mongoose.model("User", userSchema);
+
+const listingSchema = new mongoose.Schema({
+  email: { type: String, required: true},
+  id: { type: String, required: true },
+  price: {type: Number, requred: true}, 
+  sold: {type: Boolean, default: false},
+
+})
+const Listing = new mongoose.model("Listing", listingSchema);
+
 //-------------------mongodb-----------------//
 
 app.set("view engine", "ejs");
@@ -68,12 +79,14 @@ app.post("/login", async (req, res) => {
     } else {
 
     //  console.log("Successful Login   " + username);
-      res.cookie("email", username, {
+      res.cookie("username", username, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         secure: true,
         httpOnly: true,
         sameSite: 'lax'
     });
+
+   
     res.status(201).json({ message: 'User logged in successfully' });
 
     }
@@ -101,25 +114,89 @@ app.post("/register", async (req,res)=>{
     res.status(500).json({ error: 'Internal Server Error' });
   }
     
-    
-/*
-    res.cookie("username", given_username, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: true,
-        httpOnly: true,
-        sameSite: 'lax'
-    });
-    */
-   
 })
 
-app.get("/logout", (req, res) => {
-    // clear the cookie
-    res.clearCookie("username");
-    // redirect to login
-    return res.redirect("/login");
+app.post("/logout", (req, res) => {
+    // clear all cookies
+    Object.keys(req.cookies).forEach(cookieName => {
+      res.clearCookie(cookieName);
+    });
+  
+    res.status(201).json({ message: 'Listing created successfully' });
+   
 });
+
+
+app.post("/makeListing", async (req, res) => {
+  // Extract data from the request body
+  try {
+    const { classid, prc } = req.body;
+    username = req.cookies.username;
+    const privateEmail = await bcrypt.hash(username, 10);
+    // Use User.create to create a new user and save it to the database
+    const newListing = await Listing.create({
+      email: privateEmail,
+      price: prc, 
+      id: classid,
+    });
+
+    res.status(201).json({ message: 'Listing created successfully' });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  } 
+
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 app.listen('3000', () => console.log(`server started`));
+
+async function registerUser() {
+  try {
+    const apiUrl = 'http://localhost:3000/register'; // Update with your actual API endpoint
+    const userData = {
+      username: "vansh@gmail.com",
+      password: "harshakancharla", // Replace with the desired password
+    };
+
+    const response = await axios.post(apiUrl, userData);
+
+    console.log(response.data.message);
+
+    
+  } catch (error) {
+    console.error('Error registering user:', error.response ? error.response.data : error.message);
+  }
+}
+
+registerUser();
+
+
+//Atij Password is bruinVANSH ved password is coorsLight1 anish password is flumeBar
+
+
+/*
+TODO:
+
+Create a way that users are SECURELY attached to listings, when a listing status is marked as 1, share the EMAIL of the user
+
+
+*/
