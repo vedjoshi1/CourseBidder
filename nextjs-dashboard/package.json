@@ -14,10 +14,10 @@
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
-    "emailable": "^3.0.4",
     "mongo": "^0.1.0",
     "mongodb": "^6.2.0",
     "mongoimport": "^1.0.6",
+
     "next": "^14.0.0",
     "next-auth": "^5.0.0-beta.3",
     "postcss": "8.4.31",
