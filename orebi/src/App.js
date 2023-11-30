@@ -28,10 +28,10 @@ const Layout = () => {
     <div>
       <Header />
       <HeaderBottom />
-      <SpecialCase />
+      {/* <SpecialCase />
       <ScrollRestoration />
       <Outlet />
-      <Footer />
+      <Footer /> */}
       <FooterBottom />
     </div>
   );
