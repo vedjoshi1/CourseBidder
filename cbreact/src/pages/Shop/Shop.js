@@ -3,27 +3,39 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import Pagination from "../../components/pageProps/shopPage/Pagination";
 import ProductBanner from "../../components/pageProps/shopPage/ProductBanner";
 import ShopSideNav from "../../components/pageProps/shopPage/ShopSideNav";
+import { useDispatch } from "react-redux";
 
 const Shop = () => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const itemsPerPageFromBanner = (itemsPerPage) => {
     setItemsPerPage(itemsPerPage);
+
   };
 
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="My Course Listings" />
-      {/* ================= Products Start here =================== */}
-      <div className="w-full h-full flex pb-20 gap-10">
-        <div className="w-[20%] lgl:w-[20%] hidden mdl:inline-flex h-full lg:text-base text-[#767676]">
-          The courses you've put up for sale are listed to the right. <br></br>The "status" indicator tells you if your course has been purchased or not. If your course has been purchased, click the "Reveal Contact" button to get a contact card regarding your buyer.<br></br> All transactions are done externally through this communication.
-        </div>
-        <div className="w-full mdl:w-[80%] lgl:w-[80%] h-full flex flex-col gap-10">
-          <ProductBanner itemsPerPageFromBanner={itemsPerPageFromBanner} />
-          <Pagination itemsPerPage={itemsPerPage} />
-        </div>
-      </div>
-      {/* ================= Products End here ===================== */}
+        <div className="pb-20">
+          <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">
+            <h2 className="col-span-2">Class</h2>
+            <h2>Asking Price</h2>
+            <h2>Status</h2>
+            <h2>Time Posted</h2>
+          </div>
+          <div className="mt-5">
+            {/* {products.map((item) => (
+              <div key={item._id}>
+                <ItemCard item={item} />
+              </div>
+            ))} */}
+          </div>
+
+          <button
+            className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
+          >
+            Remove All Listings
+          </button>
+        </div>    
     </div>
   );
 };

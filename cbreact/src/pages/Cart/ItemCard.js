@@ -23,7 +23,7 @@ const ItemCard = ({ item }) => {
         <div className="flex w-1/3 items-center text-lg font-semibold">
           ${item.price}
         </div>
-        <div className="w-1/3 flex items-center gap-6 text-lg">
+        <div className="w-1/3 flex items-center justify-centergap-6 text-lg">
         <button
           //  An onclick function should go here
             className="py-2 px-6 bg-green-700 text-white font-semibold uppercase mb-4 hover:bg-green-800 duration-300"
