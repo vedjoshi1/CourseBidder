@@ -28,11 +28,11 @@ const Layout = () => {
     <div>
       <Header />
       <HeaderBottom />
-      <SpecialCase />
+      {/* <SpecialCase />
       <ScrollRestoration />
       <Outlet />
-      <Footer />
-      <FooterBottom />
+      <Footer /> */}
+      {/* <FooterBottom /> */}
     </div>
   );
 };
