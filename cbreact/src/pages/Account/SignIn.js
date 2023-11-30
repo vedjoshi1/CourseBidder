@@ -3,7 +3,9 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const SignIn = () => {
+  const navigate = useNavigate();
   // ============= Initial State Start here =============
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +17,7 @@ const SignIn = () => {
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
   // ============= Event Handler Start here =============
+  
   const handleEmail = (e) => {
     setEmail(e.target.value);
     setErrEmail("");
@@ -51,7 +54,9 @@ const SignIn = () => {
         // Check if the response status is 201. If so, redirect. 
         if (response.status === 201) {
           // Redirect logic here
+          navigate('/');
           setSuccessMsg("Logged in");
+
         } else {
          //Do else-ifs, error code 404 is when there's no user with that email in DB
          //code 400 is wrong password
@@ -63,7 +68,7 @@ const SignIn = () => {
 
       }catch(error){
         setSuccessMsg(
-          `Horrible Porblem`
+          `Horrible Problem`
         );
         console.error('Error logging in user:', error.response ? error.response.data : error.message);
       }
