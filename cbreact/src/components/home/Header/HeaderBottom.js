@@ -46,6 +46,25 @@ const HeaderBottom = () => {
     setFilteredProducts(filtered);
   }, [searchQuery]);
 
+  const sortedFilteredProducts = filteredProducts.sort((a, b) => {
+    const [prefixA, numericA] = a.productName.match(/([^\d]+)(\d+.*)/).slice(1);
+    const [prefixB, numericB] = b.productName.match(/([^\d]+)(\d+.*)/).slice(1);
+
+    // Compare the prefix first
+    const prefixComparison = prefixA.localeCompare(prefixB);
+    if (prefixComparison !== 0) {
+      return prefixComparison;
+    }
+
+    // Compare the numeric part as both number and string
+    const numericComparison = parseInt(numericA, 10) - parseInt(numericB, 10);
+    if (numericComparison !== 0) {
+      return numericComparison;
+    }
+
+    return numericA.localeCompare(numericB);
+  });
+
   return (
     <div className="w-full bg-[#F5F5F3] relative">
       <div className="max-w-container mx-auto">
@@ -66,7 +85,7 @@ const HeaderBottom = () => {
                   className={`w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer`}
                 >
                   {searchQuery &&
-                    filteredProducts.map((item) => (
+                    sortedFilteredProducts.map((item) => (
                       <div
                         onClick={() =>
                           navigate(
