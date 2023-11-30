@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
-
+import axios from 'axios';
 const SignIn = () => {
   // ============= Initial State Start here =============
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ const SignIn = () => {
     setErrPassword("");
   };
   // ============= Event Handler End here ===============
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (!email) {
@@ -36,9 +36,41 @@ const SignIn = () => {
     }
     // ============== Getting the value ==============
     if (email && password) {
-      setSuccessMsg(
-        `Hello dear, Thank you for your attempt. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-      );
+
+      try{
+        const apiUrl = 'http://localhost:3001/login'; // Update with your actual API endpoint
+        const userData = {
+        username: email,
+        password: password, // Replace with the desired password
+        };
+       // const response = await axios.post(apiUrl, userData);
+
+        const response = await axios.post(apiUrl, userData);
+      //  console.log(response.data.message);
+
+        // Check if the response status is 201. If so, redirect. 
+        if (response.status === 201) {
+          // Redirect logic here
+          setSuccessMsg("Logged in");
+        } else {
+         //Do else-ifs, error code 404 is when there's no user with that email in DB
+         //code 400 is wrong password
+         //Anything else is connection issue or some horrible error
+          setSuccessMsg("Issue");
+        }
+
+        
+
+      }catch(error){
+        setSuccessMsg(
+          `Horrible Porblem`
+        );
+        console.error('Error logging in user:', error.response ? error.response.data : error.message);
+      }
+
+
+
+      
       setEmail("");
       setPassword("");
     }
