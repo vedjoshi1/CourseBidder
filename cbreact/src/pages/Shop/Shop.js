@@ -12,13 +12,13 @@ const Shop = () => {
 
   return (
     <div className="max-w-container mx-auto px-4">
-      <Breadcrumbs title="Products" />
+      <Breadcrumbs title="My Course Listings" />
       {/* ================= Products Start here =================== */}
       <div className="w-full h-full flex pb-20 gap-10">
-        <div className="w-[20%] lgl:w-[25%] hidden mdl:inline-flex h-full">
-          <ShopSideNav />
+        <div className="w-[20%] lgl:w-[20%] hidden mdl:inline-flex h-full lg:text-base text-[#767676]">
+          Instructions for how to sell
         </div>
-        <div className="w-full mdl:w-[80%] lgl:w-[75%] h-full flex flex-col gap-10">
+        <div className="w-full mdl:w-[80%] lgl:w-[80%] h-full flex flex-col gap-10">
           <ProductBanner itemsPerPageFromBanner={itemsPerPageFromBanner} />
           <Pagination itemsPerPage={itemsPerPage} />
         </div>

@@ -10,7 +10,8 @@ import YearProduct from "../../components/home/YearProduct/YearProduct";
 const Home = () => {
   return (
     <div className="w-full mx-auto">
-      <Banner />
+      No classes yet.
+      {/* <Banner />
       <BannerBottom />
       <div className="max-w-container mx-auto px-4">
         <Sale />
@@ -18,7 +19,7 @@ const Home = () => {
         <BestSellers />
         <YearProduct />
         <SpecialOffers />
-      </div>
+      </div> */}
     </div>
   );
 };

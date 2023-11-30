@@ -28,11 +28,7 @@ const Layout = () => {
     <div>
       <Header />
       <HeaderBottom />
-      <SpecialCase />
-      <ScrollRestoration />
       <Outlet />
-      <Footer />
-      <FooterBottom />
     </div>
   );
 };

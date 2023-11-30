@@ -1,4 +1,5 @@
 //------------modules used-------------//
+
 const express = require("express");
 const path = require("path");
 const helmet = require("helmet");
@@ -175,7 +176,7 @@ app.listen(PORT, () => console.log(`server started`));
 
 async function registerUser() {
   try {
-    const apiUrl = 'http://localhost:3001/register'; // Update with your actual API endpoint
+    const apiUrl = 'http://localhost:3000/register'; // Update with your actual API endpoint
     const userData = {
       username: "vansh@gmail.com",
       password: "harshakancharla", // Replace with the desired password
@@ -192,7 +193,7 @@ async function registerUser() {
   }
 }
 
-//registerUser();
+registerUser();
 
 
 
