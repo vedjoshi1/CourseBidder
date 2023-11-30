@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
+import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 
-const SignUp = () => {
-  // ============= Initial State Start here =============
+
+const Profile = () => {
+     // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -129,81 +131,16 @@ const SignUp = () => {
       }
     }
   };
+
+  
   return (
-    <div className="w-full h-screen flex items-center justify-start">
-      <div className="w-1/2 hidden lgl:inline-flex h-full text-white">
-        <div className="w-[450px] h-full bg-bruinblue px-10 flex flex-col gap-6 justify-center">
-          <Link to="/">
-            <img src={logoLight} alt="logoImg" className="w-120" />
-          </Link>
-          <div className="flex flex-col gap-1 -mt-1">
-            <h1 className="font-titleFont text-xl font-medium">
-              Get started for free
-            </h1>
-            <p className="text-base">Create your account to access more</p>
-          </div>
-          <div className="w-[300px] flex items-start gap-3">
-            <span className="text-green-500 mt-1">
-              <BsCheckCircleFill />
-            </span>
-            <p className="text-base text-gray-300">
-              <span className="text-white font-semibold font-titleFont">
-                Get started fast with OREBI
-              </span>
-              <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
-            </p>
-          </div>
-          <div className="w-[300px] flex items-start gap-3">
-            <span className="text-green-500 mt-1">
-              <BsCheckCircleFill />
-            </span>
-            <p className="text-base text-gray-300">
-              <span className="text-white font-semibold font-titleFont">
-                Access all OREBI services
-              </span>
-              <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
-            </p>
-          </div>
-          <div className="w-[300px] flex items-start gap-3">
-            <span className="text-green-500 mt-1">
-              <BsCheckCircleFill />
-            </span>
-            <p className="text-base text-gray-300">
-              <span className="text-white font-semibold font-titleFont">
-                Trusted by online Shoppers
-              </span>
-              <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
-            </p>
-          </div>
-         
-        </div>
-      </div>
-      <div className="w-full lgl:w-[500px] h-full flex flex-col justify-center">
-        {successMsg ? (
-          <div className="w-[500px]">
-            <p className="w-full px-4 py-10 text-green-500 font-medium font-titleFont">
-              {successMsg}
-            </p>
-            <Link to="/signin">
-              <button
-                className="w-full h-10 bg-primeColor rounded-md text-gray-200 text-base font-titleFont font-semibold 
-            tracking-wide hover:bg-black hover:text-white duration-300"
-              >
-                Sign in
-              </button>
-            </Link>
-          </div>
-        ) : (
-          <form className="w-full lgl:w-[500px] h-screen flex items-center justify-center">
+    <div className="max-w-container mx-auto px-4">
+      <Breadcrumbs title="Profile Settings" />
+      <div className= 'flex max-w-container justify-center'>
+      <form className="w-full lgl:w-[500px] h-screen flex items-center justify-center">
             <div className="px-6 py-4 w-full h-[96%] flex flex-col justify-start overflow-y-scroll scrollbar-thin scrollbar-thumb-primeColor">
               <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-2xl mdl:text-3xl mb-4">
-                Create your account
+                Edit your account information
               </h1>
               <div className="flex flex-col gap-3">
                 {/* client name */}
@@ -392,10 +329,13 @@ const SignUp = () => {
               </div>
             </div>
           </form>
-        )}
+
       </div>
+      
+      
+
     </div>
   );
 };
 
-export default SignUp;
+export default Profile;

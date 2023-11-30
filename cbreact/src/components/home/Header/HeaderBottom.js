@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
-import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
+import { FaPlus, FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -96,11 +96,17 @@ const HeaderBottom = () => {
             )}
           </div>
           <div className="flex gap-4 mt-2 lg:mt-0 items-center pr-6 cursor-pointer relative">
-            <div onClick={() => setShowUser(!showUser)} className="flex">
-              <FaUser />
-              <FaCaretDown />
+            <div>
+              <FaPlus />
             </div>
-            {showUser && (
+
+            <Link to="/profile">
+              <div onClick={() => setShowUser(!showUser)} className="flex">
+                <FaUser />
+              </div>
+            </Link>
+            
+            {/* {showUser && (
               <motion.ul
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -124,7 +130,9 @@ const HeaderBottom = () => {
                   Others
                 </li>
               </motion.ul>
-            )}
+            )} */}
+           
+
             <Link to="/cart">
               <div className="relative">
                 <FaShoppingCart />

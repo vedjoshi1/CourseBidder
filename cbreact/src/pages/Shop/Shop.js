@@ -16,7 +16,7 @@ const Shop = () => {
       {/* ================= Products Start here =================== */}
       <div className="w-full h-full flex pb-20 gap-10">
         <div className="w-[20%] lgl:w-[20%] hidden mdl:inline-flex h-full lg:text-base text-[#767676]">
-          Instructions for how to sell
+          The courses you've put up for sale are listed to the right. <br></br>The "status" indicator tells you if your course has been purchased or not. If your course has been purchased, click the "Reveal Contact" button to get a contact card regarding your buyer.<br></br> All transactions are done externally through this communication.
         </div>
         <div className="w-full mdl:w-[80%] lgl:w-[80%] h-full flex flex-col gap-10">
           <ProductBanner itemsPerPageFromBanner={itemsPerPageFromBanner} />
