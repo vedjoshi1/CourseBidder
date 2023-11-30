@@ -32,7 +32,7 @@ const Layout = () => {
       <ScrollRestoration />
       <Outlet />
       <Footer /> */}
-      {/* <FooterBottom /> */}
+      <FooterBottom />
     </div>
   );
 };
