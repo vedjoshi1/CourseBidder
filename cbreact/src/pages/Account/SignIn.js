@@ -52,9 +52,8 @@ const SignIn = () => {
           </Link>
           <div className="flex flex-col gap-1 -mt-1">
             <h1 className="font-titleFont text-xl font-medium">
-              Stay sign in for more
+              You are one click away! 
             </h1>
-            <p className="text-base">When you sign in, you are with us!</p>
           </div>
           <div className="w-[300px] flex items-start gap-3">
             <span className="text-green-500 mt-1">
@@ -62,11 +61,9 @@ const SignIn = () => {
             </span>
             <p className="text-base text-gray-300">
               <span className="text-white font-semibold font-titleFont">
-                Get started fast with OREBI
+                Enjoy exclusive deals for college courses.
               </span>
               <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
             </p>
           </div>
           <div className="w-[300px] flex items-start gap-3">
@@ -75,11 +72,9 @@ const SignIn = () => {
             </span>
             <p className="text-base text-gray-300">
               <span className="text-white font-semibold font-titleFont">
-                Access all OREBI services
+                Be the first to buy your preferred courses.
               </span>
               <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
             </p>
           </div>
           <div className="w-[300px] flex items-start gap-3">
@@ -88,11 +83,9 @@ const SignIn = () => {
             </span>
             <p className="text-base text-gray-300">
               <span className="text-white font-semibold font-titleFont">
-                Trusted by online Shoppers
+                Sell your courses!
               </span>
               <br />
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ab omnis
-              nisi dolor recusandae consectetur!
             </p>
           </div>
           <div className="flex items-center justify-between mt-10">
@@ -138,7 +131,7 @@ const SignIn = () => {
                 {/* Email */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
-                    Work Email
+                    Email
                   </p>
                   <input
                     onChange={handleEmail}
@@ -185,7 +178,7 @@ const SignIn = () => {
                   Don't have an Account?{" "}
                   <Link to="/signup">
                     <span className="hover:text-blue-600 duration-300">
-                      Sign up
+                      Sign up!
                     </span>
                   </Link>
                 </p>
