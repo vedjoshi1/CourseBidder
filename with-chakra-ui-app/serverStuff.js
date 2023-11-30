@@ -6,9 +6,11 @@ const cookieparser = require("cookie-parser");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
+const cors = require('cors');
 //------------modules used-------------//
 
 const app = express();
+app.use(cors());
 app.use(helmet());
 // allow the app to use cookieparser
 app.use(cookieparser());
@@ -191,7 +193,8 @@ async function registerUser() {
   }
 }
 
-registerUser();
+//registerUser();
+
 
 
 //Atij Password is bruinVANSH ved password is coorsLight1 anish password is flumeBar
