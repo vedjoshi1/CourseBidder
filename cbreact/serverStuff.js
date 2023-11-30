@@ -170,7 +170,7 @@ app.post("/makeListing", async (req, res) => {
 
 
 
-const PORT = '3001'
+const PORT = '3001' //Find an open port to run backend on
 app.listen(PORT, () => console.log(`server started`));
 
 async function registerUser() {
