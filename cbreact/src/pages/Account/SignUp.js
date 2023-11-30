@@ -2,17 +2,13 @@ import React, { useState } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
-
+import axios from 'axios';
 const SignUp = () => {
   // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [zip, setZip] = useState("");
   const [checked, setChecked] = useState(false);
   // ============= Initial State End here ===============
   // ============= Error Msg Start here =================
@@ -20,10 +16,6 @@ const SignUp = () => {
   const [errEmail, setErrEmail] = useState("");
   const [errPhone, setErrPhone] = useState("");
   const [errPassword, setErrPassword] = useState("");
-  const [errAddress, setErrAddress] = useState("");
-  const [errCity, setErrCity] = useState("");
-  const [errCountry, setErrCountry] = useState("");
-  const [errZip, setErrZip] = useState("");
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
   // ============= Event Handler Start here =============
@@ -43,22 +35,6 @@ const SignUp = () => {
     setPassword(e.target.value);
     setErrPassword("");
   };
-  const handleAddress = (e) => {
-    setAddress(e.target.value);
-    setErrAddress("");
-  };
-  const handleCity = (e) => {
-    setCity(e.target.value);
-    setErrCity("");
-  };
-  const handleCountry = (e) => {
-    setCountry(e.target.value);
-    setErrCountry("");
-  };
-  const handleZip = (e) => {
-    setZip(e.target.value);
-    setErrZip("");
-  };
   // ============= Event Handler End here ===============
   // ================= Email Validation start here =============
   const EmailValidation = (email) => {
@@ -68,7 +44,7 @@ const SignUp = () => {
   };
   // ================= Email Validation End here ===============
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     if (checked) {
       if (!clientName) {
@@ -81,9 +57,6 @@ const SignUp = () => {
           setErrEmail("Enter a Valid email");
         }
       }
-      if (!phone) {
-        setErrPhone("Enter your phone number");
-      }
       if (!password) {
         setErrPassword("Create a password");
       } else {
@@ -91,41 +64,45 @@ const SignUp = () => {
           setErrPassword("Passwords must be at least 6 characters");
         }
       }
-      if (!address) {
-        setErrAddress("Enter your address");
-      }
-      if (!city) {
-        setErrCity("Enter your city name");
-      }
-      if (!country) {
-        setErrCountry("Enter the country you are residing");
-      }
-      if (!zip) {
-        setErrZip("Enter the zip code of your area");
-      }
       // ============== Getting the value ==============
       if (
         clientName &&
         email &&
         EmailValidation(email) &&
         password &&
-        password.length >= 6 &&
-        address &&
-        city &&
-        country &&
-        zip
+        password.length >= 6
       ) {
-        setSuccessMsg(
-          `Hello dear ${clientName}, Welcome you to OREBI Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-        );
+
+        
+        try {
+          const apiUrl = 'http://localhost:3001/register'; // Update with your actual API endpoint
+          const userData = {
+            username: email,
+            password: password, // Replace with the desired password
+            fullname: clientName
+          };
+      
+          const response = await axios.post(apiUrl, userData);
+      
+          if (response.status === 201) {
+            // Redirect logic here
+            setSuccessMsg("Signed Up");
+          } else {
+           //500 is the only other error code. May need to add a code for duplicate email
+            setSuccessMsg("Issue");
+          }
+      
+      
+        } catch (error) {
+          console.error('Error registering user:', error.response ? error.response.data : error.message);
+        }
+
+
+          
         setClientName("");
         setEmail("");
         setPhone("");
         setPassword("");
-        setAddress("");
-        setCity("");
-        setCountry("");
-        setZip("");
       }
     }
   };
@@ -148,7 +125,7 @@ const SignUp = () => {
             </span>
             <p className="text-base text-gray-300">
               <span className="text-white font-semibold font-titleFont">
-              Enjoy exclusive deals for college courses.
+                Enjoy exclusive deals for college courses.
               </span>
               <br />
             </p>
@@ -159,7 +136,7 @@ const SignUp = () => {
             </span>
             <p className="text-base text-gray-300">
               <span className="text-white font-semibold font-titleFont">
-              Be the first to buy your preferred courses.
+                Be the first to buy your preferred courses.
               </span>
               <br />
             </p>
@@ -170,12 +147,11 @@ const SignUp = () => {
             </span>
             <p className="text-base text-gray-300">
               <span className="text-white font-semibold font-titleFont">
-              Sell your courses!
+                Sell your courses!
               </span>
               <br />
             </p>
           </div>
-         
         </div>
       </div>
       <div className="w-full lgl:w-[500px] h-full flex flex-col justify-center">
