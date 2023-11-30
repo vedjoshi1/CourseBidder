@@ -98,7 +98,6 @@ app.post("/login", async (req, res) => {
 });
 
 
-
 app.post("/register", async (req,res)=>{
   try {
     const { username, password, fullname } = req.body;
@@ -176,7 +175,7 @@ app.listen(PORT, () => console.log(`server started`));
 
 async function registerUser() {
   try {
-    const apiUrl = 'http://localhost:3000/register'; // Update with your actual API endpoint
+    const apiUrl = 'http://localhost:3001/register'; // Update with your actual API endpoint
     const userData = {
       username: "vansh@gmail.com",
       password: "harshakancharla", // Replace with the desired password
