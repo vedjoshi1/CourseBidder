@@ -21,6 +21,8 @@ mongoose.connect("mongodb+srv://coursebidder:Generativeai1@coursebidder.gb7lsik.
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     pass: { type: String, required: true },
+    name: {type: String, required: true}, 
+    //PFP as well
 })
 const User = new mongoose.model("User", userSchema);
 
@@ -97,12 +99,13 @@ app.post("/login", async (req, res) => {
 
 app.post("/register", async (req,res)=>{
   try {
-    const { username, password } = req.body;
+    const { username, password, fullname } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     // Use User.create to create a new user and save it to the database
     const newUser = await User.create({
       email: username,
       pass: hashedPassword,
+      name: fullname,
     });
 
  //   console.log('User created:', newUser);
@@ -111,7 +114,7 @@ app.post("/register", async (req,res)=>{
     console.error('Error creating user:', error);
 
     // Handle error response
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error, Could be a Duplicate Email' });
   }
     
 })
@@ -166,8 +169,8 @@ app.post("/makeListing", async (req, res) => {
 
 
 
-
-app.listen('3000', () => console.log(`server started`));
+const PORT = '3001'
+app.listen(PORT, () => console.log(`server started`));
 
 async function registerUser() {
   try {
@@ -175,13 +178,14 @@ async function registerUser() {
     const userData = {
       username: "vansh@gmail.com",
       password: "harshakancharla", // Replace with the desired password
+      fullname: "Vansh Vansh"
     };
 
     const response = await axios.post(apiUrl, userData);
 
     console.log(response.data.message);
 
-    
+
   } catch (error) {
     console.error('Error registering user:', error.response ? error.response.data : error.message);
   }
