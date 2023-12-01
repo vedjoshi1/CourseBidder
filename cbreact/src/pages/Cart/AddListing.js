@@ -1,6 +1,3 @@
-const AddListing = () => {
+//DO NOT REMOVE THIS FILE. 
 
-    
-}
-
-export default AddListing; 
+//REMOVING THIS FILE CRASHES THE APP FOR SOME REASON

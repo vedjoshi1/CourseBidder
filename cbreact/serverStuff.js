@@ -34,6 +34,7 @@ const listingSchema = new mongoose.Schema({
   id: { type: String, required: true },
   price: {type: Number, requred: true}, 
   sold: {type: Boolean, default: false},
+  time: { type: Date, default: Date.now }
 
 })
 const Listing = new mongoose.model("Listing", listingSchema);
