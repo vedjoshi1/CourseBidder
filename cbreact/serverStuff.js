@@ -88,7 +88,8 @@ app.post("/login", async (req, res) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         secure: true,
         httpOnly: true,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        path: '/'
     });
 
    
@@ -145,7 +146,7 @@ app.post("/getuser", async (req, res) => {
     // Save the updated user profile
     const updatedUser = await user.save();
 
-    res.status(200).json({ message: 'User profile updated successfully', user: updatedUser });
+    res.status(201).json({ message: 'User profile updated successfully', user: updatedUser });
   } catch (error) {
     console.error('Error updating user profile:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -160,7 +161,7 @@ app.post("/logout", (req, res) => {
       res.clearCookie(cookieName);
     });
   
-    res.status(201).json({ message: 'Listing created successfully' });
+    res.status(201).json({ message: 'Logged Out successfully' });
    
 });
 
@@ -170,10 +171,10 @@ app.post("/makeListing", async (req, res) => {
   try {
     const { classid, prc } = req.body;
     username = req.cookies.username;
-    const privateEmail = await bcrypt.hash(username, 10);
+    //Check to see if user is loggd in
     // Use User.create to create a new user and save it to the database
     const newListing = await Listing.create({
-      email: privateEmail,
+      email: username,
       price: prc, 
       id: classid,
     });
@@ -186,6 +187,49 @@ app.post("/makeListing", async (req, res) => {
 
 
 })
+
+
+
+app.get("/getListings", async (req, res) => {
+
+  try {
+    const listingsFromDB = await Listing.find({ sold: false }); // Fetch all listings from MongoDB
+
+    const transformedListings = listingsFromDB.map((listing) => {
+      return {
+        _id: listing._id,
+        productName: listing.id,
+        price: listing.price,
+        color: "Black", // Assuming you want to set a default color
+        badge: true, // Assuming you want to set a default badge value
+        // Add other properties as needed
+      };
+    });
+    res.status(201).json(transformedListings);
+    return JSON.stringify(transformedListings, null, 2);
+
+  } catch (error) {
+    console.error('Error converting listings:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const PORT = '3001' //Find an open port to run backend on
