@@ -101,7 +101,9 @@ app.post("/login", async (req, res) => {
 
 app.post("/register", async (req,res)=>{
   try {
+
     const { username, password, fullname } = req.body;
+
     const hashedPassword = await bcrypt.hash(password, 10);
     // Use User.create to create a new user and save it to the database
     const newUser = await User.create({
@@ -120,6 +122,37 @@ app.post("/register", async (req,res)=>{
   }
     
 })
+
+
+app.post("/getuser", async (req, res) => {
+  try {
+    const { userId } = req.body; // Assuming the user ID is sent in the request body
+
+    // Fetch user from the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update user profile if new data is provided
+    const { fullname, email, password } = req.body;
+    if (fullname) user.name = fullname;
+    if (email) user.email = email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.hashedPassword = hashedPassword;
+    }
+    // Save the updated user profile
+    const updatedUser = await user.save();
+
+    res.status(200).json({ message: 'User profile updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 app.post("/logout", (req, res) => {
     // clear all cookies
@@ -153,22 +186,6 @@ app.post("/makeListing", async (req, res) => {
 
 
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const PORT = '3001' //Find an open port to run backend on
