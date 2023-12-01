@@ -7,6 +7,7 @@ import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
+import axios from 'axios';
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -14,12 +15,25 @@ const HeaderBottom = () => {
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [classes, setClasses] = useState([]);
 
   const [showForm, setShowForm] = useState(false);
 
   const toggleForm = () => {
     setShowForm(!showForm);
   }
+
+  useEffect(() => {
+    // Make a GET request to fetch classes
+    axios.get('http://localhost:3000/getListings')
+      .then(response => {
+        setClasses(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching classes:', error);
+      });
+  }, []); // The empty dependency array ensures that the effect runs once on component mount // Empty dependency array ensures the effect runs once on component mount
 
   useEffect(() => {
     document.body.addEventListener("click", (e) => {
@@ -31,7 +45,6 @@ const HeaderBottom = () => {
     });
   }, [show, ref]);
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [showSearchBar, setShowSearchBar] = useState(false);
 
@@ -39,9 +52,13 @@ const HeaderBottom = () => {
     setSearchQuery(e.target.value);
   };
 
+  const filteredClasses = classes.filter(classItem =>
+    classItem.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = classes.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredProducts(filtered);
   }, [searchQuery]);

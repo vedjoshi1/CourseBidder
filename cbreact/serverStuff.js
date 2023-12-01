@@ -38,6 +38,14 @@ const listingSchema = new mongoose.Schema({
 })
 const Listing = new mongoose.model("Listing", listingSchema);
 
+// Define a MongoDB model/schema
+const classchema = mongoose.model('Class', {
+  departmentId: String,
+  name: String,
+  // Add other fields as needed
+});
+
+const Class = new mongoose.model("Class", classchema);
 //-------------------mongodb-----------------//
 
 app.set("view engine", "ejs");
@@ -69,6 +77,18 @@ app.get("/mainpage", (req, res) => {
 });
 
 
+
+// Define a route to fetch classes
+app.get('/getClasses', async (req, res) => {
+  //let { name, description } = req.body;
+  try {
+    const classes = await Class.find();
+    res.json(classes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.post("/login", async (req, res) => {
   let { username, password } = req.body;

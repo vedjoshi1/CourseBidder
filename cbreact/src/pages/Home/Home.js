@@ -1,25 +1,25 @@
-import React from "react";
-import Banner from "../../components/Banner/Banner";
-import BannerBottom from "../../components/Banner/BannerBottom";
-import BestSellers from "../../components/home/BestSellers/BestSellers";
-import NewArrivals from "../../components/home/NewArrivals/NewArrivals";
-import Sale from "../../components/home/Sale/Sale";
-import SpecialOffers from "../../components/home/SpecialOffers/SpecialOffers";
-import YearProduct from "../../components/home/YearProduct/YearProduct";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
+  const [classes, setClasses] = useState([]);
+
   return (
     <div className="w-full mx-auto">
-      No classes yet.
-      {/* <Banner />
-      <BannerBottom />
-      <div className="max-w-container mx-auto px-4">
-        <Sale />
-        <NewArrivals />
-        <BestSellers />
-        <YearProduct />
-        <SpecialOffers />
-      </div> */}
+      {classes.length === 0 ? (
+        <p>Loading classes...</p>
+      ) : (
+        <>
+          {/* Render your components using the fetched classes */}
+          {/* Example: */}
+          {classes.map((classItem) => (
+            <div key={classItem._id}>
+              {/* Render class details here */}
+              <p>{classItem.name}</p>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 };
