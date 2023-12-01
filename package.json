@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^1.6.2",
     "mongoimport": "^1.0.6"
   },
   "devDependencies": {
