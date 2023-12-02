@@ -1,21 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import ProfileCard from "./ProfileCard";
-
+import axios from 'axios'
 
 const Profile = () => {
+  console.log("Component Rendered")
      // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [zip, setZip] = useState("");
+
   const [checked, setChecked] = useState(false);
   // ============= Initial State End here ===============
   // ============= Error Msg Start here =================
@@ -23,10 +21,7 @@ const Profile = () => {
   const [errEmail, setErrEmail] = useState("");
   const [errPhone, setErrPhone] = useState("");
   const [errPassword, setErrPassword] = useState("");
-  const [errAddress, setErrAddress] = useState("");
-  const [errCity, setErrCity] = useState("");
-  const [errCountry, setErrCountry] = useState("");
-  const [errZip, setErrZip] = useState("");
+
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
   // ============= Event Handler Start here =============
@@ -46,22 +41,29 @@ const Profile = () => {
     setPassword(e.target.value);
     setErrPassword("");
   };
-  const handleAddress = (e) => {
-    setAddress(e.target.value);
-    setErrAddress("");
-  };
-  const handleCity = (e) => {
-    setCity(e.target.value);
-    setErrCity("");
-  };
-  const handleCountry = (e) => {
-    setCountry(e.target.value);
-    setErrCountry("");
-  };
-  const handleZip = (e) => {
-    setZip(e.target.value);
-    setErrZip("");
-  };
+  
+  useEffect(() => {
+
+    console.log("being Called");
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://localhost:3001/getuser');
+        // Assuming the response data has a property 'name'
+
+        console.log(response);
+     //   setClientName(response.user.fullName);
+       // setEmail(response.user.email);
+      } catch (error) {
+        console.error('Error fetching default name:', error);
+        // Handle error if needed
+      }
+    };
+
+    fetchData();
+  }, [setClientName, setEmail]);
+
+
   // ============= Event Handler End here ===============
   // ================= Email Validation start here =============
   const EmailValidation = (email) => {
@@ -71,12 +73,12 @@ const Profile = () => {
   };
   // ================= Email Validation End here ===============
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
+
+    console.log("clicked")
     e.preventDefault();
     if (checked) {
-      if (!clientName) {
-        setErrClientName("Enter your name");
-      }
+      
       if (!email) {
         setErrEmail("Enter your email");
       } else {
@@ -84,40 +86,32 @@ const Profile = () => {
           setErrEmail("Enter a Valid email");
         }
       }
-      if (!phone) {
-        setErrPhone("Enter your phone number");
-      }
-      if (!password) {
-        setErrPassword("Create a password");
-      } else {
-        if (password.length < 6) {
-          setErrPassword("Passwords must be at least 6 characters");
-        }
-      }
-      if (!address) {
-        setErrAddress("Enter your address");
-      }
-      if (!city) {
-        setErrCity("Enter your city name");
-      }
-      if (!country) {
-        setErrCountry("Enter the country you are residing");
-      }
-      if (!zip) {
-        setErrZip("Enter the zip code of your area");
-      }
+      
+     
+     
       // ============== Getting the value ==============
-      if (
-        clientName &&
-        email &&
-        EmailValidation(email) &&
-        password &&
-        password.length >= 6 &&
-        address &&
-        city &&
-        country &&
-        zip
-      ) {
+      
+
+        try {
+
+
+
+          const apiUrl = 'http://localhost:3001/getuser'; // Update with your actual API endpoint
+          const userData = {
+            fullName: clientName,
+            email: email,
+            password: password, // Replace with the desired password
+          };
+     
+
+          const response = await axios.post(apiUrl, userData);
+          console.log(response);
+          //If response is 201, the post went through, time to update userCard
+          
+        } catch (error) {
+          console.error('Error fetching default name:', error);
+          // Handle error if needed
+        }
         setSuccessMsg(
           `Hello dear ${clientName}, Welcome you to OREBI Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
         );
@@ -125,11 +119,8 @@ const Profile = () => {
         setEmail("");
         setPhone("");
         setPassword("");
-        setAddress("");
-        setCity("");
-        setCountry("");
-        setZip("");
-      }
+      
+      
     }
   };
 
@@ -243,7 +234,7 @@ const Profile = () => {
                       : "bg-gray-500 hover:bg-gray-500 hover:text-gray-200 cursor-none"
                   } w-full text-gray-200 text-base font-medium h-10 rounded-md hover:text-white duration-300`}
                 >
-                  Create Account
+                  Update Information
                 </button>
                 <p className="text-sm text-center font-titleFont font-medium">
                   Don't have an Account?{" "}
