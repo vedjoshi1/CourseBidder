@@ -159,10 +159,10 @@ app.post("/updateuser", async (req, res) => {
   try {
 
 
-    const { fullname, email, password } = req.body;
+    const { fullname, username, password } = req.body;
 
     // Fetch user from the database
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: username });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -170,7 +170,7 @@ app.post("/updateuser", async (req, res) => {
     // Update user profile if new data is provided
     if (fullname) user.name = fullname;
     
-    if (email) user.email = email;
+    if (username) user.email = username;
     
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);

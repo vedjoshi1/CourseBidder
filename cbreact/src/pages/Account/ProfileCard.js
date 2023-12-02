@@ -50,8 +50,8 @@ const ProfileCard = () => {
         setName(profileData.user.name || "Not logged in.")
         setEmail(profileData.user.email || "Not logged in.")
       }
-    });
-  }, []); // Empty dependency array means this runs once on mount
+    }, []);
+  }); // Empty dependency array means this runs once on mount
 
     return (
         <div className="flex flex-col w-[400px] h-[300px] bg-[#F5F5F3] justify-center items-center">
