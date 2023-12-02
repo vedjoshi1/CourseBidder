@@ -72,16 +72,6 @@ mongoose.connection.on('connected', () => {
 })
 
 
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  fullName: {type: String, required: true},
-  listings: [ObjectId],
-  session: {type: String, default: ""}
-  //PFP as well
-})
-const userCollection = new mongoose.model("user", userSchema);
-
 const listingSchema = new mongoose.Schema({
   email: { type: String, required: true},
   departmentId: { type: String, required: true },
@@ -90,6 +80,16 @@ const listingSchema = new mongoose.Schema({
   timePosted: {type: Date, default: Date.now},
 })
 
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  fullName: {type: String, required: true},
+  listings: [listingSchema],
+  session: {type: String, default: ""}
+  //PFP as well
+})
+const userCollection = new mongoose.model("user", userSchema);
 const classSchema = new mongoose.Schema({
   departmentId: String,
   name: String,
@@ -280,7 +280,8 @@ app.post("/makeListing", body('departmentId'), body('price').isFloat({min: 0}), 
         } else {
           try {
             await classCollection.updateOne({departmentId: departmentId}, {$push: {listings: newListing}})
-            await userCollection.updateOne({email: email}, {$push: {listings: newListing._id}})
+            await userCollection.updateOne(
+              { email: email },{$push: {listings: newListing}});
             res.status(201).json({messages: ["successfully created listing"]});
           } catch (error) {
             res.status(500).json({errors: ['could not update listings for user or class']})
