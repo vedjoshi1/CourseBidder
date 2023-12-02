@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const cors = require('cors');
+const fs = require('fs');
+
 //------------modules used-------------//
 
 const app = express();
@@ -34,10 +36,19 @@ const listingSchema = new mongoose.Schema({
   id: { type: String, required: true },
   price: {type: Number, requred: true}, 
   sold: {type: Boolean, default: false},
+  time : {type: Date, default: Date.now},
 
 })
 const Listing = new mongoose.model("Listing", listingSchema);
 
+
+const classchema = new mongoose.Schema({
+  departmentId: String,
+  name: String,
+  // Add other fields as needed
+});
+
+const Class = new mongoose.model("Class", classchema);
 //-------------------mongodb-----------------//
 
 app.set("view engine", "ejs");
@@ -188,24 +199,34 @@ app.post("/makeListing", async (req, res) => {
 
 })
 
+app.get('/getClasses', async (req, res) => {
+  //let { name, description } = req.body;
+  try {
+    
+    const documents = await Class.find({}).exec();
 
+    // Convert the documents array to a JSON string
+    const jsonString = JSON.stringify(documents, null, 2);
+
+    // Write JSON string to a file named 'classes.json'
+    fs.writeFileSync('classes.json', jsonString);
+
+    res.status(201).json(jsonString);
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.get("/getListings", async (req, res) => {
 
   try {
-    const listingsFromDB = await Listing.find({ sold: false }); // Fetch all listings from MongoDB
+    const { classid } = req.body;
+    const listingsFromDB = await Listing.find({ sold: false, id :  classid}); // Fetch all listings from MongoDB
 
-    const transformedListings = listingsFromDB.map((listing) => {
-      return {
-        _id: listing._id,
-        productName: listing.id,
-        price: listing.price,
-        color: "Black", // Assuming you want to set a default color
-        badge: true, // Assuming you want to set a default badge value
-        // Add other properties as needed
-      };
-    });
-    res.status(201).json(transformedListings);
+    
+    res.status(201).json(listingsFromDB);
     return JSON.stringify(transformedListings, null, 2);
 
   } catch (error) {

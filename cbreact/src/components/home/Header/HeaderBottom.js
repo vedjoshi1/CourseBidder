@@ -7,6 +7,7 @@ import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
+import { classes } from "../../../classes";
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -32,23 +33,44 @@ const HeaderBottom = () => {
   }, [show, ref]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filteredClasses, setFilteredClasses] = useState([]);
   const [showSearchBar, setShowSearchBar] = useState(false);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
+  /*useEffect(() => {
+    const filtered = classes.filter((classItem) => {
+      // Assuming `departmentId` is the property in classes that you want to filter on
+      return classItem.departmentId.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+    
+    setFilteredProducts(filtered);
+    // Rest of your logic with filtered items...
+  }, [searchQuery]);*/
+
   useEffect(() => {
+    const filtered = classes.filter((classItem) => {
+      // Assuming `departmentId` is the property in classes that you want to filter on
+      return classItem.departmentId.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
+    setFilteredClasses(filtered);
+  }, [searchQuery]);
+
+  /*useEffect(() => {
     const filtered = paginationItems.filter((item) =>
       item.productName.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setFilteredProducts(filtered);
-  }, [searchQuery]);
 
-  const sortedFilteredProducts = filteredProducts.sort((a, b) => {
-    const [prefixA, numericA] = a.productName.match(/([^\d]+)(\d+.*)/).slice(1);
-    const [prefixB, numericB] = b.productName.match(/([^\d]+)(\d+.*)/).slice(1);
+
+    setFilteredProducts(filtered);
+  }, [searchQuery]);*/
+
+  /*const sortedFilteredProducts = filteredProducts.sort((a, b) => {
+    const [prefixA, numericA] = a.departmentId.match(/([^\d]+)(\d+.*)/).slice(1);
+    const [prefixB, numericB] = b.departmentId.match(/([^\d]+)(\d+.*)/).slice(1);
 
     // Compare the prefix first
     const prefixComparison = prefixA.localeCompare(prefixB);
@@ -63,7 +85,7 @@ const HeaderBottom = () => {
     }
 
     return numericA.localeCompare(numericB);
-  });
+  });*/
 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
@@ -85,36 +107,36 @@ const HeaderBottom = () => {
                   className={`w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer`}
                 >
                   {searchQuery &&
-                    sortedFilteredProducts.map((item) => (
+                    filteredClasses.map((classItem) => (
                       <div
                         onClick={() =>
                           navigate(
-                            `/product/${item.productName
+                            `/departmentId/${classItem.departmentId
                               .toLowerCase()
                               .split(" ")
                               .join("")}`,
                             {
                               state: {
-                                item: item,
+                                item: classItem,
                               },
                             }
                           ) &
                           setShowSearchBar(true) &
                           setSearchQuery("")
                         }
-                        key={item._id}
+                        key={classItem._id}
                         className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3"
                       >
-                        <img className="w-24" src={item.img} alt="productImg" />
+                        <img className="w-24" src={classItem.img} alt="productImg" />
                         <div className="flex flex-col gap-1">
                           <p className="font-semibold text-lg">
-                            {item.productName}
+                            {classItem.departmentId}
                           </p>
-                          <p className="text-xs">{item.des}</p>
+                          <p className="text-xs">{classItem.des}</p>
                           <p className="text-sm">
                             Price:{" "}
                             <span className="text-primeColor font-semibold">
-                              ${item.price}
+                              ${classItem.price}
                             </span>
                           </p>
                         </div>
