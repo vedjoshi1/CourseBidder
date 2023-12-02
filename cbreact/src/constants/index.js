@@ -13,6 +13,8 @@ import {
   newArrFour,
 } from "../assets/images/index";
 
+import axios from 'axios';
+
 // =================== NavBarList Start here ====================
 export const navBarList = [
   {
@@ -84,6 +86,27 @@ export const SplOfferData = [
 // =================== Special Offer data End here ==============
 
 // =================== PaginationItems Start here ===============
+
+
+const getPaginationItems = async() => {
+
+    try{
+
+      const apiUrl = 'http://localhost:3001/getListings';
+      const response = await axios.get(apiUrl);
+      console.log(response);
+    }catch(error){
+      
+      console.error('Error getting items', error.response ? error.response.data : error.message);
+    }
+
+
+
+
+}
+
+
+
 
 export const paginationItems = [
   {
