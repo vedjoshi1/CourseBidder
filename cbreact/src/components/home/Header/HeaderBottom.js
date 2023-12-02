@@ -66,14 +66,19 @@ const HeaderBottom = () => {
   };
 
   const handleConfirm = () => {
-
+    console.log("Confirm Button Clicked");
     let response = {
       departmentId: classSearchQuery, 
       price: askingPrice
     }
 
-    axios.post("http://localhost:3001/makeListing", response, {withCredentials: true}).then(console.log("Successfully sent"))
+    try{
+      axios.post("http://localhost:3001/makeListing", response, {withCredentials: true}).then(console.log("Successfully sent"))
+    }catch (error){
 
+
+      
+    }
     // Use classSearchQuery and askingPrice for your backend endpoint
     console.log('Class Search Query:', classSearchQuery);
     console.log('Asking Price:', askingPrice);

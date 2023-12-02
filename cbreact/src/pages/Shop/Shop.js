@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import Pagination from "../../components/pageProps/shopPage/Pagination";
 import ProductBanner from "../../components/pageProps/shopPage/ProductBanner";
@@ -11,6 +11,25 @@ const Shop = () => {
     setItemsPerPage(itemsPerPage);
 
   };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const departmentId = 'YOUR_DEPARTMENT_ID';
+      //  const response = await axios.get(`/getListings?departmentId=${departmentId}`);
+      //  setListings(response.data);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+        // Handle error if needed
+      }
+    };
+
+    fetchData();
+  }, []); 
+
+
+
 
   return (
     <div className="max-w-container mx-auto px-4">
