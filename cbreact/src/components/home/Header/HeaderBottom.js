@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
 import { classes } from "../../../classes";
+import axios from "axios";
+
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -15,6 +17,7 @@ const HeaderBottom = () => {
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
+
 
   const [showForm, setShowForm] = useState(false);
 
@@ -40,15 +43,7 @@ const HeaderBottom = () => {
     setSearchQuery(e.target.value);
   };
 
-  /*useEffect(() => {
-    const filtered = classes.filter((classItem) => {
-      // Assuming `departmentId` is the property in classes that you want to filter on
-      return classItem.departmentId.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-    
-    setFilteredProducts(filtered);
-    // Rest of your logic with filtered items...
-  }, [searchQuery]);*/
+  
 
   useEffect(() => {
     const filtered = classes.filter((classItem) => {
@@ -58,6 +53,34 @@ const HeaderBottom = () => {
 
     setFilteredClasses(filtered);
   }, [searchQuery]);
+
+  const [classSearchQuery, setClassSearchQuery] = useState('');
+  const [askingPrice, setAskingPrice] = useState('');
+
+  const handleClassSearch = (event) => {
+    setClassSearchQuery(event.target.value);
+  };
+
+  const handleAskingPriceChange = (event) => {
+    setAskingPrice(event.target.value);
+  };
+
+  const handleConfirm = () => {
+
+    let response = {
+      departmentId: classSearchQuery, 
+      price: askingPrice
+    }
+
+    axios.post("http://localhost:3001/makeListing", response, {withCredentials: true}).then(console.log("Successfully sent"))
+
+    // Use classSearchQuery and askingPrice for your backend endpoint
+    console.log('Class Search Query:', classSearchQuery);
+    console.log('Asking Price:', askingPrice);
+
+
+
+  };
 
  
   return (
@@ -82,21 +105,18 @@ const HeaderBottom = () => {
                   {searchQuery &&
                     filteredClasses.map((classItem) => (
                       <div
-                        onClick={() =>
-                          navigate(
-                            `/departmentId/${classItem.departmentId
-                              .toLowerCase()
-                              .split(" ")
-                              .join("")}`,
-                            {
-                              state: {
-                                item: classItem,
-                              },
-                            }
-                          ) &
-                          setShowSearchBar(true) &
-                          setSearchQuery("")
-                        }
+                        onClick={() => {
+                          
+                          navigate('/', {
+                            state: {
+                              itemID: classItem.departmentId,
+                            },
+                          });
+                            
+                  
+                            setShowSearchBar(true); 
+                            setSearchQuery("");
+                        }}
                         key={classItem._id}
                         className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-1"
                       >
@@ -120,8 +140,8 @@ const HeaderBottom = () => {
                 <input
                   className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
                   type="text"
-                  onChange={handleSearch}
-                  value={searchQuery}
+                  onChange={handleClassSearch}
+                  value={classSearchQuery}
                   placeholder="What class are you posting for?"
                 />
                 <FaSearch className="w-5 h-5" />
@@ -132,15 +152,17 @@ const HeaderBottom = () => {
                 <input
                   className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
                   type="text"
-                  onChange={handleSearch}
-                  value={searchQuery}
+                  onChange={handleAskingPriceChange}
+                  value={askingPrice}
                   placeholder="Asking Price"
                 />
                 <MdAttachMoney className="w-5 h-5" />
                 
               </div>
 
-              <button className="w-[80px] h-[30px]  bg-primeColor hover: bg-black hover: text-white cursor-pointer text-white text-[14px]">
+              <button className="w-[80px] h-[30px]  bg-primeColor hover: bg-black hover: text-white cursor-pointer text-white text-[14px]"
+                      onClick={handleConfirm}
+              >
                 Confirm
               </button>
 

@@ -43,12 +43,12 @@ const SignIn = () => {
       try{
         const apiUrl = 'http://localhost:3001/login'; // Update with your actual API endpoint
         const userData = {
-        username: email,
+        email: email,
         password: password, // Replace with the desired password
         };
        // const response = await axios.post(apiUrl, userData);
 
-        const response = await axios.post(apiUrl, userData);
+        const response = await axios.post(apiUrl, userData, {withCredentials: true});
       //  console.log(response.data.message);
 
         // Check if the response status is 201. If so, redirect. 

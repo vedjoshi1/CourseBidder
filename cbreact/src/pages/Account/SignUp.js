@@ -77,12 +77,12 @@ const SignUp = () => {
         try {
           const apiUrl = 'http://localhost:3001/register'; // Update with your actual API endpoint
           const userData = {
-            username: email,
+            email: email,
             password: password, // Replace with the desired password
-            fullname: clientName
+            fullName: clientName
           };
       
-          const response = await axios.post(apiUrl, userData);
+          const response = await axios.post(apiUrl, userData, {withCredentials: true});
       
           if (response.status === 201) {
             // Redirect logic here
