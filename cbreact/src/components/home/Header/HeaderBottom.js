@@ -59,34 +59,7 @@ const HeaderBottom = () => {
     setFilteredClasses(filtered);
   }, [searchQuery]);
 
-  /*useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-
-    setFilteredProducts(filtered);
-  }, [searchQuery]);*/
-
-  /*const sortedFilteredProducts = filteredProducts.sort((a, b) => {
-    const [prefixA, numericA] = a.departmentId.match(/([^\d]+)(\d+.*)/).slice(1);
-    const [prefixB, numericB] = b.departmentId.match(/([^\d]+)(\d+.*)/).slice(1);
-
-    // Compare the prefix first
-    const prefixComparison = prefixA.localeCompare(prefixB);
-    if (prefixComparison !== 0) {
-      return prefixComparison;
-    }
-
-    // Compare the numeric part as both number and string
-    const numericComparison = parseInt(numericA, 10) - parseInt(numericB, 10);
-    if (numericComparison !== 0) {
-      return numericComparison;
-    }
-
-    return numericA.localeCompare(numericB);
-  });*/
-
+ 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
       <div className="max-w-container mx-auto">
@@ -125,20 +98,16 @@ const HeaderBottom = () => {
                           setSearchQuery("")
                         }
                         key={classItem._id}
-                        className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3"
+                        className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-1"
                       >
-                        <img className="w-24" src={classItem.img} alt="productImg" />
-                        <div className="flex flex-col gap-1">
-                          <p className="font-semibold text-lg">
+                        <div className="flex flex-col">
+                          <p className="font-semibold text-lg ml-5">
                             {classItem.departmentId}
                           </p>
-                          <p className="text-xs">{classItem.des}</p>
-                          <p className="text-sm">
-                            Price:{" "}
-                            <span className="text-primeColor font-semibold">
-                              ${classItem.price}
-                            </span>
+                          <p className="italic ml-5">
+                            {classItem.name}
                           </p>
+                         
                         </div>
                       </div>
                     ))}
