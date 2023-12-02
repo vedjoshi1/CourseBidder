@@ -99,8 +99,7 @@ app.post("/login", async (req, res) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         secure: true,
         httpOnly: true,
-        sameSite: 'lax',
-        path: '/'
+        sameSite: 'lax'
     });
 
    
@@ -136,12 +135,15 @@ app.post("/register", async (req,res)=>{
 })
 
 
-app.post("/getuser", async (req, res) => {
+app.post("/updateuser", async (req, res) => {
   try {
-    const { userId } = req.body; // Assuming the user ID is sent in the request body
+
+    const username = req.cookies.username;
+
+    console.log("Username:", username)
 
     // Fetch user from the database
-    const user = await User.findById(userId);
+    const user = await User.findOne({ email: username });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -149,7 +151,9 @@ app.post("/getuser", async (req, res) => {
     // Update user profile if new data is provided
     const { fullname, email, password } = req.body;
     if (fullname) user.name = fullname;
+    
     if (email) user.email = email;
+    
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
       user.hashedPassword = hashedPassword;
@@ -157,11 +161,25 @@ app.post("/getuser", async (req, res) => {
     // Save the updated user profile
     const updatedUser = await user.save();
 
-    res.status(201).json({ message: 'User profile updated successfully', user: updatedUser });
+    res.status(200).json({ message: 'Sucessfully updated profile', user: updatedUser });
   } catch (error) {
     console.error('Error updating user profile:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+app.get("/getuser", async (req, res) => {
+
+    const username = req.cookies.username;
+
+    // Fetch user from the database
+    const user = await User.findOne({ email: username });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User info', user: user });
+    
 });
 
 
@@ -172,7 +190,7 @@ app.post("/logout", (req, res) => {
       res.clearCookie(cookieName);
     });
   
-    res.status(201).json({ message: 'Logged Out successfully' });
+    res.status(201).json({ message: 'Listing created successfully' });
    
 });
 
@@ -182,10 +200,10 @@ app.post("/makeListing", async (req, res) => {
   try {
     const { classid, prc } = req.body;
     username = req.cookies.username;
-    //Check to see if user is loggd in
+    const privateEmail = await bcrypt.hash(username, 10);
     // Use User.create to create a new user and save it to the database
     const newListing = await Listing.create({
-      email: username,
+      email: privateEmail,
       price: prc, 
       id: classid,
     });
