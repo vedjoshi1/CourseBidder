@@ -61,7 +61,7 @@ async function getUserFromCookie(cookie) {
 
 
 //-------------------mongodb-----------------//
-const uri = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.2";
+const uri = "mongodb+srv://coursebidder:Generativeai1@coursebidder.gb7lsik.mongodb.net/CourseBidder?retryWrites=true&w=majority";
 
 async function tryMongooseConnection() {
   return mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
@@ -73,14 +73,14 @@ mongoose.connection.on('connected', () => {
 
 
 const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    fullName: {type: String, required: true},
-    listings: [ObjectId],
-    session: {type: String, default: ""}
-    //PFP as well
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  fullName: {type: String, required: true},
+  listings: [ObjectId],
+  session: {type: String, default: ""}
+  //PFP as well
 })
-const userCollection = new mongoose.model("User", userSchema);
+const userCollection = new mongoose.model("user", userSchema);
 
 const listingSchema = new mongoose.Schema({
   email: { type: String, required: true},
@@ -168,12 +168,17 @@ app.post("/login", body('email').trim().isEmail().escape(),  body('password').is
 
     const {email, password} = matchedData(req);
 
+  
+    console.log(email);
     try {
       let user = await userCollection.findOne({email: email}).lean();
       if (!user) {
         res.status(400).json({errors: [`user with email ${email} does not exist`]}).send()
         return;
       }
+
+     
+
 
       let validatePassword = await bcrypt.compare(password, user.password)
       if(!validatePassword) {
