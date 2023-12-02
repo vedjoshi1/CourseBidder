@@ -30,7 +30,6 @@ import { FaPhoneAlt } from "react-icons/fa";
       return response.json();
     })
     .then(profileData => {
-      console.log('Profile data:', profileData);
       return profileData;
     })
     .catch(error => {

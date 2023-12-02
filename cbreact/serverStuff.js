@@ -109,6 +109,26 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/checkpassword", async (req, res) => {
+  let { username, password } = req.body;
+  const user = await User.findOne({ email: username }).lean()
+
+  if (!user) {
+    res.status(404).send({message: "No  User Found"})
+  } else {
+
+    var validatePassword = await bcrypt.compare(password, user.pass)
+
+    if (!validatePassword) {
+      res.status(400).send({message: "Invalid Password", correct: false})
+    } else {
+   
+    res.status(201).json({ message: 'Password is correct.', correct: true});
+
+    }
+  }
+});
+
 
 app.post("/register", async (req,res)=>{
   try {
@@ -138,18 +158,16 @@ app.post("/register", async (req,res)=>{
 app.post("/updateuser", async (req, res) => {
   try {
 
-    const username = req.cookies.username;
 
-    console.log("Username:", username)
+    const { fullname, email, password } = req.body;
 
     // Fetch user from the database
-    const user = await User.findOne({ email: username });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
     // Update user profile if new data is provided
-    const { fullname, email, password } = req.body;
     if (fullname) user.name = fullname;
     
     if (email) user.email = email;
@@ -253,10 +271,6 @@ app.get("/getListings", async (req, res) => {
   }
 
 });
-
-
-
-
 
 
 const PORT = '3001' //Find an open port to run backend on

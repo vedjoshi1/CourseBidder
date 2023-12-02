@@ -1,9 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import ProfileCard from "./ProfileCard";
+
+
+fetch("http://localhost:3000/login", {
+  method: "POST",
+  body: JSON.stringify({
+    username: "johndoe@gmail.com",
+    password: "john"
+  }),
+  headers: {
+    "Content-type": "application/json; charset=UTF-8"
+  }
+});
+
+
+function getProfile() {
+    return fetch('/getuser', {
+      method: 'GET',
+      credentials: 'include' 
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+      return response.json();
+    })
+    .then(profileData => {
+      return profileData;
+    })
+    .catch(error => {
+      console.error('Error fetching profile:', error);
+    });
+  }
+
+  function checkPassword(username, password) {
+    return fetch('/checkpassword', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response =>  response.json())
+    .then(profileData => profileData)
+    .catch(error => console.error('Error fetching password:', error));
+
+
+  }
+
+  function updateProfile(fullname, username, password) {
+    return fetch('/updateuser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullname, username, password })
+    })
+    .then(response =>  response.json())
+    .then(profileData => profileData)
+    .catch(error => console.error('Error fetching password:', error));
+  }
 
 
 const Profile = () => {
@@ -71,6 +127,16 @@ const Profile = () => {
   };
   // ================= Email Validation End here ===============
 
+  // Fetch profile data when the component mounts
+  useEffect(() => {
+    getProfile().then(profileData => {
+      if (profileData) {
+        setClientName(profileData.user.name || "Not logged in.")
+        setEmail(profileData.user.email || "Not logged in.")
+      }
+    });
+  }, []);
+
   const handleSignUp = (e) => {
     e.preventDefault();
     if (checked) {
@@ -88,11 +154,32 @@ const Profile = () => {
         setErrPhone("Enter your phone number");
       }
       if (!password) {
-        setErrPassword("Create a password");
+        setErrPassword("Must type in a password");
       } else {
-        if (password.length < 6) {
-          setErrPassword("Passwords must be at least 6 characters");
-        }
+        // if (password.length < 6) {
+        //   setErrPassword("Passwords must be at least 6 characters");
+        // }
+
+        checkPassword(email, password).then(profileData => {
+
+              if(!profileData.correct)
+              {
+                setSuccessMsg("")
+                setErrPassword("Incorrect Password.")
+              }
+              else
+              {
+                setSuccessMsg(
+                  `Successfully updated profile.`
+                );
+
+                updateProfile(clientName, email, password)
+
+              }
+            
+        });
+
+        
       }
       if (!address) {
         setErrAddress("Enter your address");
@@ -107,30 +194,10 @@ const Profile = () => {
         setErrZip("Enter the zip code of your area");
       }
       // ============== Getting the value ==============
-      if (
-        clientName &&
-        email &&
-        EmailValidation(email) &&
-        password &&
-        password.length >= 6 &&
-        address &&
-        city &&
-        country &&
-        zip
-      ) {
-        setSuccessMsg(
-          `Hello dear ${clientName}, Welcome you to OREBI Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-        );
-        setClientName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        setAddress("");
-        setCity("");
-        setCountry("");
-        setZip("");
-      }
-    }
+
+        
+        
+        }
   };
 
   
@@ -184,7 +251,7 @@ const Profile = () => {
                     </p>
                   )}
                 </div>
-                {/* Phone Number */}
+                {/* Phone Number
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
                     Phone Number
@@ -202,7 +269,7 @@ const Profile = () => {
                       {errPhone}
                     </p>
                   )}
-                </div>
+                </div> */}
                 {/* Password */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
@@ -213,7 +280,7 @@ const Profile = () => {
                     value={password}
                     className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
                     type="password"
-                    placeholder="Create password"
+                    placeholder="Edit password"
                   />
                   {errPassword && (
                     <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
@@ -243,16 +310,12 @@ const Profile = () => {
                       : "bg-gray-500 hover:bg-gray-500 hover:text-gray-200 cursor-none"
                   } w-full text-gray-200 text-base font-medium h-10 rounded-md hover:text-white duration-300`}
                 >
-                  Create Account
+                  Edit Profile
                 </button>
-                <p className="text-sm text-center font-titleFont font-medium">
-                  Don't have an Account?{" "}
-                  <Link to="/signin">
-                    <span className="hover:text-blue-600 duration-300">
-                      Sign in
-                    </span>
-                  </Link>
-                </p>
+                  <p>
+                  {successMsg}
+                  </p>
+              
               </div>
             </div>
           </form>
