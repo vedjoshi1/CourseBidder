@@ -9,11 +9,17 @@ const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const cors = require('cors');
 const fs = require('fs');
+const { ObjectId } = require("mongodb");
+const crypto = require('crypto');
+const {cookie, query, body, validationResult, matchedData } = require('express-validator')
 
 //------------modules used-------------//
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(helmet());
 // allow the app to use cookieparser
 app.use(cookieparser());
@@ -21,38 +27,314 @@ app.use(cookieparser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// ---------------------auth------------------//
+async function getUserFromCookie(cookie) {
+  try {
+    await tryMongooseConnection();
+  } catch (error) {
+    console.log(error)
+    reject("could not connect to mongodb")
+  }
+  return new Promise(async (resolve, reject) => {
+    if (!cookie) {
+      reject("null cookie")
+    } else {
+      try {
+        let user = await userCollection.findOne({session: cookie})
+        user ? resolve(user): reject("no user found");
+      } catch (error) {
+        console.log(error)
+        reject("could not fetch user")
+      }
+    }
+  })
+}
+
+// TODO: cookie based auth for all routes
+// function checkUser(req, res, next) {
+//   if ( req.path == '/') return next();
+
+//   //authenticate user
+//   next();
+// }
+// app.all('*', checkUser);
+
+
 //-------------------mongodb-----------------//
-mongoose.connect("mongodb+srv://coursebidder:Generativeai1@coursebidder.gb7lsik.mongodb.net/CourseBidder", { useNewUrlParser: true });
+const uri = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.2";
+
+async function tryMongooseConnection() {
+  return mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
+}
+
+mongoose.connection.on('connected', () => {
+    console.log("connected to mongodb");
+})
+
+
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    pass: { type: String, required: true },
-    name: {type: String, required: true}, 
+    password: { type: String, required: true },
+    fullName: {type: String, required: true},
+    listings: [ObjectId],
+    session: {type: String, default: ""}
     //PFP as well
 })
-const User = new mongoose.model("User", userSchema);
+const userCollection = new mongoose.model("User", userSchema);
 
 const listingSchema = new mongoose.Schema({
   email: { type: String, required: true},
-  id: { type: String, required: true },
+  departmentId: { type: String, required: true },
   price: {type: Number, requred: true}, 
-  sold: {type: Boolean, default: false},
-  time : {type: Date, default: Date.now},
-
+  isSold: {type: Boolean, default: false},
+  timePosted: {type: Date, default: Date.now},
 })
-const Listing = new mongoose.model("Listing", listingSchema);
 
-
-const classchema = new mongoose.Schema({
+const classSchema = new mongoose.Schema({
   departmentId: String,
   name: String,
+  listings: [listingSchema]
   // Add other fields as needed
 });
 
-const Class = new mongoose.model("Class", classchema);
+const classCollection = new mongoose.model("classes", classSchema);
+
+
+
+
+
+
+// const Listing = new mongoose.model("Listing", listingSchema);
+
+
+
+
+
 //-------------------mongodb-----------------//
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+app.post("/register", body('email').trim().isEmail().escape(), body('password').isLength({min: 6}), body('fullName').escape(), async (req,res) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+    try {
+      await tryMongooseConnection();
+    } catch (error) {
+      res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+      console.log(error)
+      return;
+    }
+
+    const {email, password, fullName} = matchedData(req);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+      let old_user = await userCollection.findOne({email: email});
+      if (old_user) {
+        res.status(400).json({errors: [`user with email ${email} already exists`]}).send()
+        return;
+      }
+
+      const newUser = await userCollection.create({
+        email: email,
+        password: hashedPassword,
+        fullName: fullName,
+        listings: []
+      });
+      res.status(201).json({messages: [`user with email ${email} created successfully`]}).send();
+    } catch (error) {
+      res.status(500).json({errors: [`could not add new user with email ${email}`]}).send();
+      console.log(error)
+    }
+
+  } else {
+    res.status(422).json({errors: result.array() }).send();
+    console.log("inputs failed validation")
+  }
+})
+
+
+app.post("/login", body('email').trim().isEmail().escape(),  body('password').isLength({min: 6}), async (req, res) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+    try {
+      await tryMongooseConnection();
+    } catch (error) {
+      res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+      console.log(error)
+      return;
+    }
+
+    const {email, password} = matchedData(req);
+
+    try {
+      let user = await userCollection.findOne({email: email}).lean();
+      if (!user) {
+        res.status(400).json({errors: [`user with email ${email} does not exist`]}).send()
+        return;
+      }
+
+      let validatePassword = await bcrypt.compare(password, user.password)
+      if(!validatePassword) {
+        res.status(401).json({messages: [`incorrect password for user with email ${email}`]}).send()
+      } else {
+        let cookie = crypto.randomBytes(16).toString('hex');
+        try {
+          await userCollection.updateOne({email: email}, {$set: {session: cookie}}) 
+          res.cookie("session", cookie, {
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            secure: true,
+            httpOnly: true,
+            sameSite: 'lax',
+            path: '/'
+          });
+          res.status(201).json({messages: [`user with email ${email} logged in successfully`]}).send()
+
+        } catch (error) {
+          res.status(500).json({errors: [`could not update session cookie for user with email ${email}`]}).send()
+          console.log(error)
+        }
+      }
+
+    } catch (error) {
+      res.status(500).json({errors: [`could not query for user with email ${email}`]}).send();
+      console.log(error)
+    }
+
+  } else {
+    res.status(422).json({errors: result.array() });
+    res.send();
+    console.log("inputs failed validation")
+  }
+})
+
+
+
+app.post("/logout", body('email').trim().isEmail().escape(), async (req, res) => {
+
+    const result = validationResult(req);
+    if(result.isEmpty()) {
+      // clear all cookies
+      Object.keys(req.cookies).forEach(cookieName => {
+        res.clearCookie(cookieName);
+      });
+      try {
+        await tryMongooseConnection();
+      } catch (error) {
+        res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+        console.log(error)
+        return;
+      }
+      const {email} = matchedData(req);
+
+      try {
+        await userCollection.updateOne({email: email}, {$set: {session: ""}}) 
+        res.status(201).json({messages: [`user with email ${email} logged out successfully`]})
+      } catch (error) {
+        res.status(500).json({errors: [`could not log out session for user with email ${email}`]}).send()
+        console.log(error)
+      }
+
+    } else {
+      res.status(422).json({errors: result.array()}).send();
+      console.log("inputs failed validation")
+    }
+  
+   
+});
+
+
+// TODO: clean up
+app.post("/makeListing", body('departmentId'), body('price').isFloat({min: 0}), async (req,res) => {
+    
+  const result = validationResult(req);
+  if(result.isEmpty()) {
+    try {
+      await tryMongooseConnection();
+    } catch (error) {
+      res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+      console.log(error)
+      return;
+    }
+    const {departmentId, price} = matchedData(req);
+    try {
+      const user = await getUserFromCookie(req?.cookies?.session)
+      const email = user.email
+      const newListing = {
+        email: email,
+        price: price,
+        departmentId: departmentId,
+        _id: mongoose.Types.ObjectId()
+      }
+      try {
+        let course = await classCollection.findOne({departmentId: departmentId});
+        if(course.listings.filter((listing) => listing.email == email).length > 0) {
+          res.status(400).json({errors: [`user with email ${email} already has a listing for course ${departmentId}`]}).send()
+          console.log(`user with email ${email} already has a listing for course ${departmentId}`);
+        } else {
+          try {
+            await classCollection.updateOne({departmentId: departmentId}, {$push: {listings: newListing}})
+            await userCollection.updateOne({email: email}, {$push: {listings: newListing._id}})
+            res.status(201).json({messages: ["successfully created listing"]});
+          } catch (error) {
+            res.status(500).json({errors: ['could not update listings for user or class']})
+          }
+        }
+      } catch (error) {
+        res.status(500).json({errors: [`could not get class with department id ${departmentId}`]}).send();
+        console.log(error);
+      }
+
+    } catch (error) {
+      res.status(400).send({errors: ['could not get user email from cookie!']}) 
+      console.log(error);
+    }
+  } else {
+    res.status(422).json({errors: result.array()}).send();
+    console.log("inputs failed validation") 
+  }
+})
+
+
+app.get("/getListings", query('departmentId'), async (req, res) => {
+    const result = validationResult(req);
+    if(result.isEmpty()) {
+      try {
+        await tryMongooseConnection();
+      } catch (error) {
+        res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+        console.log(error)
+        return;
+      }
+      const {departmentId} = matchedData(req);
+
+      try {
+        const classes = await classCollection.findOne({departmentId: departmentId}).lean()
+        string_classes = classes.listings.slice(0, Math.min(classes.listings.length, 1000)).map((course) => {
+          return {
+            email: course.email,
+            departmentId: course.departmentId,
+            price: course.price,
+            isSold: course.isSold,
+            timePosted: course.timePosted.toString(),
+            id: course._id.toString()
+          };
+        })
+        console.log(string_classes)
+        res.send(JSON.stringify({data: string_classes}))
+      } catch (error) {
+        res.status(500).json({errors: [`could not fetch listings for class with id ${departmentId}`]}).send();
+        console.log(error);
+      }
+
+    } else {
+      res.status(422).json({errors: result.array()}).send();
+      console.log("inputs failed validation")
+    }
+  
+});
+
 
 app.get("/", (req, res) => {
     // check if user is logged in, by checking cookie
@@ -81,59 +363,6 @@ app.get("/mainpage", (req, res) => {
 
 
 
-app.post("/login", async (req, res) => {
-  let { username, password } = req.body;
-  const user = await User.findOne({ email: username }).lean()
-  if (!user) {
-    res.status(404).send({message: "No  User Found"})
-  } else {
-
-    var validatePassword = await bcrypt.compare(password, user.pass)
-
-    if (!validatePassword) {
-      res.status(400).send({message: "Invalid Password"})
-    } else {
-
-    //  console.log("Successful Login   " + username);
-      res.cookie("username", username, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: true,
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/'
-    });
-
-   
-    res.status(201).json({ message: 'User logged in successfully' });
-
-    }
-  }
-});
-
-
-app.post("/register", async (req,res)=>{
-  try {
-
-    const { username, password, fullname } = req.body;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Use User.create to create a new user and save it to the database
-    const newUser = await User.create({
-      email: username,
-      pass: hashedPassword,
-      name: fullname,
-    });
-
- //   console.log('User created:', newUser);
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (error) {
-    console.error('Error creating user:', error);
-
-    // Handle error response
-    res.status(500).json({ error: 'Internal Server Error, Could be a Duplicate Email' });
-  }
-    
-})
 
 
 app.post("/getuser", async (req, res) => {
@@ -141,7 +370,7 @@ app.post("/getuser", async (req, res) => {
     const { userId } = req.body; // Assuming the user ID is sent in the request body
 
     // Fetch user from the database
-    const user = await User.findById(userId);
+    const user = await userCollection.findById(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
@@ -166,38 +395,9 @@ app.post("/getuser", async (req, res) => {
 
 
 
-app.post("/logout", (req, res) => {
-    // clear all cookies
-    Object.keys(req.cookies).forEach(cookieName => {
-      res.clearCookie(cookieName);
-    });
-  
-    res.status(201).json({ message: 'Logged Out successfully' });
-   
-});
 
 
-app.post("/makeListing", async (req, res) => {
-  // Extract data from the request body
-  try {
-    const { classid, prc } = req.body;
-    username = req.cookies.username;
-    //Check to see if user is loggd in
-    // Use User.create to create a new user and save it to the database
-    const newListing = await Listing.create({
-      email: username,
-      price: prc, 
-      id: classid,
-    });
 
-    res.status(201).json({ message: 'Listing created successfully' });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  } 
-
-
-})
 
 app.get('/getClasses', async (req, res) => {
   //let { name, description } = req.body;
@@ -219,73 +419,7 @@ app.get('/getClasses', async (req, res) => {
   }
 });
 
-app.get("/getListings", async (req, res) => {
-
-  try {
-    const { classid } = req.body;
-    const listingsFromDB = await Listing.find({ sold: false, id :  classid}); // Fetch all listings from MongoDB
-
-    
-    res.status(201).json(listingsFromDB);
-    return JSON.stringify(transformedListings, null, 2);
-
-  } catch (error) {
-    console.error('Error converting listings:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const PORT = '3001' //Find an open port to run backend on
-app.listen(PORT, () => console.log(`server started`));
-
-async function registerUser() {
-  try {
-    const apiUrl = 'http://localhost:3000/register'; // Update with your actual API endpoint
-    const userData = {
-      username: "vansh@gmail.com",
-      password: "harshakancharla", // Replace with the desired password
-      fullname: "Vansh Vansh"
-    };
-
-    const response = await axios.post(apiUrl, userData);
-
-    console.log(response.data.message);
-
-
-  } catch (error) {
-    console.error('Error registering user:', error.response ? error.response.data : error.message);
-  }
-}
-
-//registerUser();
-
-
-
-//Atij Password is bruinVANSH ved password is coorsLight1 anish password is flumeBar
-
-
-/*
-TODO:
-
-Create a way that users are SECURELY attached to listings, when a listing status is marked as 1, share the EMAIL of the user
-
-
-*/
+app.listen(PORT, () => console.log(`server started on port ${PORT}`));

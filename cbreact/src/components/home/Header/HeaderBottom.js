@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
 import { classes } from "../../../classes";
+import axios from "axios";
+
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -15,6 +17,7 @@ const HeaderBottom = () => {
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
   const ref = useRef();
+
 
   const [showForm, setShowForm] = useState(false);
 
@@ -40,15 +43,7 @@ const HeaderBottom = () => {
     setSearchQuery(e.target.value);
   };
 
-  /*useEffect(() => {
-    const filtered = classes.filter((classItem) => {
-      // Assuming `departmentId` is the property in classes that you want to filter on
-      return classItem.departmentId.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-    
-    setFilteredProducts(filtered);
-    // Rest of your logic with filtered items...
-  }, [searchQuery]);*/
+  
 
   useEffect(() => {
     const filtered = classes.filter((classItem) => {
@@ -59,34 +54,35 @@ const HeaderBottom = () => {
     setFilteredClasses(filtered);
   }, [searchQuery]);
 
-  /*useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
-      item.productName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const [classSearchQuery, setClassSearchQuery] = useState('');
+  const [askingPrice, setAskingPrice] = useState('');
 
+  const handleClassSearch = (event) => {
+    setClassSearchQuery(event.target.value);
+  };
 
-    setFilteredProducts(filtered);
-  }, [searchQuery]);*/
+  const handleAskingPriceChange = (event) => {
+    setAskingPrice(event.target.value);
+  };
 
-  /*const sortedFilteredProducts = filteredProducts.sort((a, b) => {
-    const [prefixA, numericA] = a.departmentId.match(/([^\d]+)(\d+.*)/).slice(1);
-    const [prefixB, numericB] = b.departmentId.match(/([^\d]+)(\d+.*)/).slice(1);
+  const handleConfirm = () => {
 
-    // Compare the prefix first
-    const prefixComparison = prefixA.localeCompare(prefixB);
-    if (prefixComparison !== 0) {
-      return prefixComparison;
+    let response = {
+      departmentId: classSearchQuery, 
+      price: askingPrice
     }
 
-    // Compare the numeric part as both number and string
-    const numericComparison = parseInt(numericA, 10) - parseInt(numericB, 10);
-    if (numericComparison !== 0) {
-      return numericComparison;
-    }
+    axios.post("http://localhost:3001/makeListing", response, {withCredentials: true}).then(console.log("Successfully sent"))
 
-    return numericA.localeCompare(numericB);
-  });*/
+    // Use classSearchQuery and askingPrice for your backend endpoint
+    console.log('Class Search Query:', classSearchQuery);
+    console.log('Asking Price:', askingPrice);
 
+
+
+  };
+
+ 
   return (
     <div className="w-full bg-[#F5F5F3] relative">
       <div className="max-w-container mx-auto">
@@ -109,36 +105,29 @@ const HeaderBottom = () => {
                   {searchQuery &&
                     filteredClasses.map((classItem) => (
                       <div
-                        onClick={() =>
-                          navigate(
-                            `/departmentId/${classItem.departmentId
-                              .toLowerCase()
-                              .split(" ")
-                              .join("")}`,
-                            {
-                              state: {
-                                item: classItem,
-                              },
-                            }
-                          ) &
-                          setShowSearchBar(true) &
-                          setSearchQuery("")
-                        }
+                        onClick={() => {
+                          
+                          navigate('/', {
+                            state: {
+                              itemID: classItem.departmentId,
+                            },
+                          });
+                            
+                  
+                            setShowSearchBar(true); 
+                            setSearchQuery("");
+                        }}
                         key={classItem._id}
-                        className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-3"
+                        className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-1"
                       >
-                        <img className="w-24" src={classItem.img} alt="productImg" />
-                        <div className="flex flex-col gap-1">
-                          <p className="font-semibold text-lg">
+                        <div className="flex flex-col">
+                          <p className="font-semibold text-lg ml-5">
                             {classItem.departmentId}
                           </p>
-                          <p className="text-xs">{classItem.des}</p>
-                          <p className="text-sm">
-                            Price:{" "}
-                            <span className="text-primeColor font-semibold">
-                              ${classItem.price}
-                            </span>
+                          <p className="italic ml-5">
+                            {classItem.name}
                           </p>
+                         
                         </div>
                       </div>
                     ))}
@@ -151,8 +140,8 @@ const HeaderBottom = () => {
                 <input
                   className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
                   type="text"
-                  onChange={handleSearch}
-                  value={searchQuery}
+                  onChange={handleClassSearch}
+                  value={classSearchQuery}
                   placeholder="What class are you posting for?"
                 />
                 <FaSearch className="w-5 h-5" />
@@ -163,15 +152,17 @@ const HeaderBottom = () => {
                 <input
                   className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
                   type="text"
-                  onChange={handleSearch}
-                  value={searchQuery}
+                  onChange={handleAskingPriceChange}
+                  value={askingPrice}
                   placeholder="Asking Price"
                 />
                 <MdAttachMoney className="w-5 h-5" />
                 
               </div>
 
-              <button className="w-[80px] h-[30px]  bg-primeColor hover: bg-black hover: text-white cursor-pointer text-white text-[14px]">
+              <button className="w-[80px] h-[30px]  bg-primeColor hover: bg-black hover: text-white cursor-pointer text-white text-[14px]"
+                      onClick={handleConfirm}
+              >
                 Confirm
               </button>
 
