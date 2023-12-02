@@ -43,6 +43,8 @@ const HeaderBottom = () => {
     const filtered = paginationItems.filter((item) =>
       item.productName.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+
     setFilteredProducts(filtered);
   }, [searchQuery]);
 
