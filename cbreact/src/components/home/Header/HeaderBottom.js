@@ -7,6 +7,7 @@ import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
+import { classes } from "../cbreact/classes.js";
 
 const HeaderBottom = () => {
   const products = useSelector((state) => state.orebiReducer.products);
@@ -40,7 +41,7 @@ const HeaderBottom = () => {
   };
 
   useEffect(() => {
-    const filtered = paginationItems.filter((item) =>
+    const filtered = classes.filter((item) =>
       item.productName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 

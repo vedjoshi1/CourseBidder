@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
 const cors = require('cors');
+const fs = require('fs');
 
 //------------modules used-------------//
 
@@ -207,11 +208,10 @@ app.get('/getClasses', async (req, res) => {
     // Convert the documents array to a JSON string
     const jsonString = JSON.stringify(documents, null, 2);
 
+    // Write JSON string to a file named 'classes.json'
+    fs.writeFileSync('classes.json', jsonString);
+
     res.status(201).json(jsonString);
-
-
-
-
     
   } catch (error) {
     console.error(error);
@@ -253,7 +253,7 @@ app.get("/getListings", async (req, res) => {
 
 
 
-const PORT = '3001' //Find an open port to run backend on
+const PORT = '3000' //Find an open port to run backend on
 app.listen(PORT, () => console.log(`server started`));
 
 async function registerUser() {
