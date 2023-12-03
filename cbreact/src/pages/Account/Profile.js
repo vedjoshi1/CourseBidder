@@ -4,16 +4,74 @@ import { Link } from "react-router-dom";
 import { logoLight } from "../../assets/images";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import ProfileCard from "./ProfileCard";
-import axios from 'axios'
+
+
+// fetch("http://localhost:3000/login", {
+//   method: "POST",
+//   body: JSON.stringify({
+//     username: "johndoe@gmail.com",
+//     password: "john"
+//   }),
+//   headers: {
+//     "Content-type": "application/json; charset=UTF-8"
+//   }
+// });
+
+
+function getProfile() {
+    return fetch('/getuser', {
+      method: 'GET',
+      credentials: 'include' 
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+      return response.json();
+    })
+    .then(profileData => {
+      return profileData;
+    })
+    .catch(error => {
+      console.error('Error fetching profile:', error);
+    });
+  }
+
+  function checkPassword(username, password) {
+    return fetch('/checkpassword', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response =>  response.json())
+    .then(profileData => profileData)
+    .catch(error => console.error('Error fetching password:', error));
+
+
+  }
+
+  function updateProfile(fullname, username, password) {
+    return fetch('/getuser', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullname, username, password })
+    })
+    .then(response =>  response.json())
+    .then(profileData => profileData)
+    .catch(error => console.error('Error fetching password:', error));
+  }
+
 
 const Profile = () => {
-  console.log("Component Rendered")
      // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("");
+  const [zip, setZip] = useState("");
   const [checked, setChecked] = useState(false);
   // ============= Initial State End here ===============
   // ============= Error Msg Start here =================
@@ -21,7 +79,10 @@ const Profile = () => {
   const [errEmail, setErrEmail] = useState("");
   const [errPhone, setErrPhone] = useState("");
   const [errPassword, setErrPassword] = useState("");
-
+  const [errAddress, setErrAddress] = useState("");
+  const [errCity, setErrCity] = useState("");
+  const [errCountry, setErrCountry] = useState("");
+  const [errZip, setErrZip] = useState("");
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
   // ============= Event Handler Start here =============
@@ -41,29 +102,22 @@ const Profile = () => {
     setPassword(e.target.value);
     setErrPassword("");
   };
-  
-  useEffect(() => {
-
-    console.log("being Called");
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://localhost:3001/getuser');
-        // Assuming the response data has a property 'name'
-
-        console.log(response);
-     //   setClientName(response.user.fullName);
-       // setEmail(response.user.email);
-      } catch (error) {
-        console.error('Error fetching default name:', error);
-        // Handle error if needed
-      }
-    };
-
-    fetchData();
-  }, [setClientName, setEmail]);
-
-
+  const handleAddress = (e) => {
+    setAddress(e.target.value);
+    setErrAddress("");
+  };
+  const handleCity = (e) => {
+    setCity(e.target.value);
+    setErrCity("");
+  };
+  const handleCountry = (e) => {
+    setCountry(e.target.value);
+    setErrCountry("");
+  };
+  const handleZip = (e) => {
+    setZip(e.target.value);
+    setErrZip("");
+  };
   // ============= Event Handler End here ===============
   // ================= Email Validation start here =============
   const EmailValidation = (email) => {
@@ -73,12 +127,22 @@ const Profile = () => {
   };
   // ================= Email Validation End here ===============
 
-  const handleSignUp = async (e) => {
+  // Fetch profile data when the component mounts
+  useEffect(() => {
+    getProfile().then(profileData => {
+      if (profileData) {
+        setClientName(profileData.user.fullName || "Not logged in.")
+        setEmail(profileData.user.email || "Not logged in.")
+      }
+    });
+  }, []);
 
-    console.log("clicked")
+  const handleSignUp = (e) => {
     e.preventDefault();
     if (checked) {
-      
+      if (!clientName) {
+        setErrClientName("Enter your name");
+      }
       if (!email) {
         setErrEmail("Enter your email");
       } else {
@@ -86,42 +150,54 @@ const Profile = () => {
           setErrEmail("Enter a Valid email");
         }
       }
-      
-     
-     
+      if (!phone) {
+        setErrPhone("Enter your phone number");
+      }
+      if (!password) {
+        setErrPassword("Must type in a password");
+      } else {
+        // if (password.length < 6) {
+        //   setErrPassword("Passwords must be at least 6 characters");
+        // }
+
+        checkPassword(email, password).then(profileData => {
+
+              if(!profileData.correct)
+              {
+                setSuccessMsg("")
+                setErrPassword("Incorrect Password.")
+              }
+              else
+              {
+                setSuccessMsg(
+                  `Successfully updated profile.`
+                );
+
+                updateProfile(clientName, email, password)
+
+              }
+            
+        });
+
+        
+      }
+      if (!address) {
+        setErrAddress("Enter your address");
+      }
+      if (!city) {
+        setErrCity("Enter your city name");
+      }
+      if (!country) {
+        setErrCountry("Enter the country you are residing");
+      }
+      if (!zip) {
+        setErrZip("Enter the zip code of your area");
+      }
       // ============== Getting the value ==============
-      
 
-        try {
-
-
-
-          const apiUrl = 'http://localhost:3001/getuser'; // Update with your actual API endpoint
-          const userData = {
-            fullName: clientName,
-            email: email,
-            password: password, // Replace with the desired password
-          };
-     
-
-          const response = await axios.post(apiUrl, userData);
-          console.log(response);
-          //If response is 201, the post went through, time to update userCard
-          
-        } catch (error) {
-          console.error('Error fetching default name:', error);
-          // Handle error if needed
+        
+        
         }
-        setSuccessMsg(
-          `Hello dear ${clientName}, Welcome you to OREBI Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-        );
-        setClientName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-      
-      
-    }
   };
 
   
@@ -175,7 +251,7 @@ const Profile = () => {
                     </p>
                   )}
                 </div>
-                {/* Phone Number */}
+                {/* Phone Number
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
                     Phone Number
@@ -193,7 +269,7 @@ const Profile = () => {
                       {errPhone}
                     </p>
                   )}
-                </div>
+                </div> */}
                 {/* Password */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
@@ -204,7 +280,7 @@ const Profile = () => {
                     value={password}
                     className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
                     type="password"
-                    placeholder="Create password"
+                    placeholder="Edit password"
                   />
                   {errPassword && (
                     <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
@@ -234,16 +310,12 @@ const Profile = () => {
                       : "bg-gray-500 hover:bg-gray-500 hover:text-gray-200 cursor-none"
                   } w-full text-gray-200 text-base font-medium h-10 rounded-md hover:text-white duration-300`}
                 >
-                  Update Information
+                  Edit Profile
                 </button>
-                <p className="text-sm text-center font-titleFont font-medium">
-                  Don't have an Account?{" "}
-                  <Link to="/signin">
-                    <span className="hover:text-blue-600 duration-300">
-                      Sign in
-                    </span>
-                  </Link>
-                </p>
+                  <p>
+                  {successMsg}
+                  </p>
+              
               </div>
             </div>
           </form>

@@ -452,11 +452,6 @@ app.post("/removeListing" , async (req, res) => {
   const listingId = (req.body.listingId);
   try {
     const user = await getUserFromCookie(req?.cookies?.session)
-   
-
-    
-
-     
       
      
      // console.log(user.listings);
@@ -534,6 +529,26 @@ app.get("/getuser", async (req, res) => {
     res.status(422).json({errors: result.array() }).send();
     console.log("inputs failed validation")
 
+  }
+});
+
+app.post("/checkpassword", async (req, res) => {
+  let { username, password } = req.body;
+  const user = await userCollection.findOne({ email: username }).lean()
+
+  if (!user) {
+    res.status(404).send({message: "No  User Found"})
+  } else {
+
+    var validatePassword = await bcrypt.compare(password, user.pass)
+
+    if (!validatePassword) {
+      res.status(400).send({message: "Invalid Password", correct: false})
+    } else {
+   
+    res.status(201).json({ message: 'Password is correct.', correct: true});
+
+    }
   }
 });
 
