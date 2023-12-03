@@ -492,7 +492,7 @@ app.post("/removeListing" , async (req, res) => {
 
 });
 
-app.get("/getuser", async (req, res) => {
+app.post("/getuser", async (req, res) => {
   const result = validationResult(req);
   if (result.isEmpty()) {
     try {
@@ -505,7 +505,7 @@ app.get("/getuser", async (req, res) => {
       try {
         const user = await getUserFromCookie(req?.cookies?.session)
         const { fullname, email, password } = req.body;
-        if (fullname) user.name = fullname;
+        if (fullname) user.fullName = fullname;
         if (email) user.email = email;
         if (password) {
           const hashedPassword = await bcrypt.hash(password, 10);
@@ -533,14 +533,14 @@ app.get("/getuser", async (req, res) => {
 });
 
 app.post("/checkpassword", async (req, res) => {
-  let { username, password } = req.body;
-  const user = await userCollection.findOne({ email: username }).lean()
+  let { email, password } = req.body;
+  const user = await userCollection.findOne({ email: email }).lean()
 
   if (!user) {
     res.status(404).send({message: "No  User Found"})
   } else {
 
-    var validatePassword = await bcrypt.compare(password, user.pass)
+    var validatePassword = await bcrypt.compare(password, user.password)
 
     if (!validatePassword) {
       res.status(400).send({message: "Invalid Password", correct: false})
