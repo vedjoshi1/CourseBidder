@@ -130,7 +130,7 @@ const HeaderBottom = () => {
                             {classItem.departmentId}
                           </p>
                           <p className="italic ml-5">
-                            Being here{classItem.name}
+                            {classItem.name}
                           </p>
                          
                         </div>

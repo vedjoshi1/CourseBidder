@@ -79,7 +79,7 @@ const ShopPage = ({ itemID }) => {
 
   if (numberOfItems > 0){
     return (
-      <div className="max-w-container mx-auto px-8">
+      <div className="max-w-container mx-auto px-4">
         <Breadcrumbs title={itemID} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <Items currentItems={apiData} />
@@ -114,14 +114,17 @@ const Home = () => {
   const itemID = location.state ? location.state.itemID : undefined;
 
   return (
-    <div className="flex justify-center w-full mx-auto">
+    <div className="w-full mx-auto">
       {itemID ? (
         <ShopPage itemID={itemID} />
       ) : (
         <>
+          <div className="flex w-full justify-center">
             <div className="flex w-[80%]">
-              <Image imgSrc={art} />
-            </div>
+                <Image imgSrc={art} />
+            </div>    
+          </div>
+            
         </>
       )}
     </div>
