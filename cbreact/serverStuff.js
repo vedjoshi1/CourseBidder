@@ -61,7 +61,7 @@ async function getUserFromCookie(cookie) {
 
 
 //-------------------mongodb-----------------//
-const uri = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.2";
+const uri = "mongodb+srv://coursebidder:Generativeai1@coursebidder.gb7lsik.mongodb.net/CourseBidder?retryWrites=true&w=majority";
 
 async function tryMongooseConnection() {
   return mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true});
@@ -72,16 +72,6 @@ mongoose.connection.on('connected', () => {
 })
 
 
-const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    fullName: {type: String, required: true},
-    listings: [ObjectId],
-    session: {type: String, default: ""}
-    //PFP as well
-})
-const userCollection = new mongoose.model("User", userSchema);
-
 const listingSchema = new mongoose.Schema({
   email: { type: String, required: true},
   departmentId: { type: String, required: true },
@@ -90,6 +80,16 @@ const listingSchema = new mongoose.Schema({
   timePosted: {type: Date, default: Date.now},
 })
 
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  fullName: {type: String, required: true},
+  listings: [listingSchema],
+  session: {type: String, default: ""}
+  //PFP as well
+})
+const userCollection = new mongoose.model("user", userSchema);
 const classSchema = new mongoose.Schema({
   departmentId: String,
   name: String,
@@ -168,12 +168,17 @@ app.post("/login", body('email').trim().isEmail().escape(),  body('password').is
 
     const {email, password} = matchedData(req);
 
+  
+    console.log(email);
     try {
       let user = await userCollection.findOne({email: email}).lean();
       if (!user) {
         res.status(400).json({errors: [`user with email ${email} does not exist`]}).send()
         return;
       }
+
+     
+
 
       let validatePassword = await bcrypt.compare(password, user.password)
       if(!validatePassword) {
@@ -275,7 +280,8 @@ app.post("/makeListing", body('departmentId'), body('price').isFloat({min: 0}), 
         } else {
           try {
             await classCollection.updateOne({departmentId: departmentId}, {$push: {listings: newListing}})
-            await userCollection.updateOne({email: email}, {$push: {listings: newListing._id}})
+            await userCollection.updateOne(
+              { email: email },{$push: {listings: newListing}});
             res.status(201).json({messages: ["successfully created listing"]});
           } catch (error) {
             res.status(500).json({errors: ['could not update listings for user or class']})
@@ -296,21 +302,60 @@ app.post("/makeListing", body('departmentId'), body('price').isFloat({min: 0}), 
   }
 })
 
+app.get("/getListingsFromUser", query(), async (req, res) => {
+
+  
+  const result = validationResult(req);
+  if(result.isEmpty()) {
+    try {
+      await tryMongooseConnection();
+    } catch (error) {
+      res.status(501).json({errors: ["could not connect to mongodb"]}).send()
+      console.log(error)
+      return;
+    }
+
+    try {
+      const user = await getUserFromCookie(req?.cookies?.session)
+      const email = user.email
+      
+      res.status(201).send(JSON.stringify({data: user.listings}));
+      
+
+    } catch (error) {
+      res.status(400).send({errors: ['could not get user email from cookie!']}) 
+      console.log(error);
+    }
+    
+   
+
+  } else {
+    res.status(422).json({errors: result.array()}).send();
+    console.log("inputs failed validation")
+  }
+
+});
 
 app.get("/getListings", query('departmentId'), async (req, res) => {
+
+  
     const result = validationResult(req);
     if(result.isEmpty()) {
       try {
         await tryMongooseConnection();
       } catch (error) {
-        res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+        res.status(501).json({errors: ["could not connect to mongodb"]}).send()
         console.log(error)
         return;
       }
-      const {departmentId} = matchedData(req);
 
+      
+      const { departmentId } = req.body;
+      console.log('Extracted departmentId:', departmentId);
+      
       try {
         const classes = await classCollection.findOne({departmentId: departmentId}).lean()
+      //  console.log(classes);
         string_classes = classes.listings.slice(0, Math.min(classes.listings.length, 1000)).map((course) => {
           return {
             email: course.email,
@@ -365,31 +410,43 @@ app.get("/mainpage", (req, res) => {
 
 
 
-app.post("/getuser", async (req, res) => {
-  try {
-    const { userId } = req.body; // Assuming the user ID is sent in the request body
-
-    // Fetch user from the database
-    const user = await userCollection.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Update user profile if new data is provided
-    const { fullname, email, password } = req.body;
-    if (fullname) user.name = fullname;
-    if (email) user.email = email;
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.hashedPassword = hashedPassword;
-    }
+app.get("/getuser", async (req, res) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+    try {
+        await tryMongooseConnection();
+      } catch (error) {
+        res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+        console.log(error)
+        return;
+      }
+      try {
+        const user = await getUserFromCookie(req?.cookies?.session)
+        const { fullname, email, password } = req.body;
+        if (fullname) user.name = fullname;
+        if (email) user.email = email;
+        if (password) {
+          const hashedPassword = await bcrypt.hash(password, 10);
+          user.hashedPassword = hashedPassword;
+       }
     // Save the updated user profile
-    const updatedUser = await user.save();
+        const updatedUser = await user.save();
+        res.status(201).json({ message: 'User profile updated successfully', user: updatedUser });
 
-    res.status(201).json({ message: 'User profile updated successfully', user: updatedUser });
-  } catch (error) {
-    console.error('Error updating user profile:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+      } catch (error) {
+        res.status(400).send({errors: ['could not get user email from cookie!']}) 
+        console.log(error);
+      }
+
+
+
+
+
+  }else{
+
+    res.status(422).json({errors: result.array() }).send();
+    console.log("inputs failed validation")
+
   }
 });
 

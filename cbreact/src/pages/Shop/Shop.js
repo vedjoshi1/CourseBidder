@@ -1,16 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import Pagination from "../../components/pageProps/shopPage/Pagination";
 import ProductBanner from "../../components/pageProps/shopPage/ProductBanner";
 import ShopSideNav from "../../components/pageProps/shopPage/ShopSideNav";
 import { useDispatch } from "react-redux";
-
+import axios from 'axios';
 const Shop = () => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const itemsPerPageFromBanner = (itemsPerPage) => {
     setItemsPerPage(itemsPerPage);
 
   };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+       
+        const response = await axios.get(`/getListingsFromUser`);
+      
+        console.log(response.data);
+
+        //This will log a JSON of all of the listings of the CURRENTLY LOGGED IN USER
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+        // Handle error if needed
+      }
+    };
+
+    fetchData();
+  }, []); 
+
+
+
 
   return (
     <div className="max-w-container mx-auto px-4">
