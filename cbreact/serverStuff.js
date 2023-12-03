@@ -350,7 +350,7 @@ app.get("/getListings", query('departmentId'), async (req, res) => {
       }
 
       
-      const { departmentId } = req.body;
+      const { departmentId } = matchedData(req);
       console.log('Extracted departmentId:', departmentId);
       
       try {
