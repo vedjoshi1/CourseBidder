@@ -90,37 +90,6 @@ app.set("views", path.join(__dirname, "views"));
 //     }
 //   })
 
-async function makeListing(req) {
-  // Extract data from the request body
-  tryMongooseConnection().then(async () => {
-    try {
-      const {classid, prc} = req.body;
-      let username = "anishpal@gmail.com";
-      const newListing = {
-        email: username,
-        price: prc,
-        id: classid,
-        _id: mongoose.Types.ObjectId()
-      }
-      classCollection.findOne({departmentId: classid}, (err, course ) => {
-        if (course.listings.filter((listing) => listing.email == username).length >  0) {
-          // already has a course listing
-          console.log(`user ${username} already has a listing for this course (${classid})!`)
-        } else {
-          // push to array
-          classCollection.updateOne({departmentId: classid}, {$push: {listings: newListing}}).then((docs) => {
-            console.log("added listing")
-            userCollection.updateOne({email: username}, {$push: {listings: newListing._id}}).then((docs) => {
-              console.log("added listing to user")
-            })
-          })
-        }
-      });
-
-    } catch (error) {
-      console.log(error)
-    }
-  })
   // try {
   //   const { classid, prc} = req.body;
   //   let username = "atij";
@@ -150,7 +119,7 @@ async function makeListing(req) {
 
 }
 
-
+post 
 let req = {
   body: {
       classid: "COM SCI 32",
@@ -161,24 +130,4 @@ makeListing(req)
 
 
 
-//POPULATION THE TREE STRUCTURE OF THE CLASSES
 
-// tryMongooseConnection().then(() => {
-//   fs.readFile('/Users/anish/CS35L/CourseBidder/cbreact/src/classes.json', (err, data) => {
-//     if(err) {
-//       console.log(err);
-//     }
-  
-    
-//     let courses = JSON.parse(data.toString());
-  
-//     courses.forEach((course) => course.listings = [])
-//     // console.log(classes[0])
-
-//     classCollection.insertMany(courses).then((docs) => {
-//       console.log(doc)
-//     }).catch(() => console.log(err))
-    
-//   })
-
-// })

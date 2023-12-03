@@ -19,13 +19,7 @@ const Product = (props) => {
 
   const navigate = useNavigate();
   const productItem = props;
-  const handleProductDetails = () => {
-    navigate(`/product/${rootId}`, {
-      state: {
-        item: productItem,
-      },
-    });
-  };
+  
   return (
     <div className="w-full relative group">
       <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
