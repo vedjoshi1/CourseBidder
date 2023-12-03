@@ -350,8 +350,10 @@ app.get("/getListings", query('departmentId'), async (req, res) => {
       }
 
       
+
       const { departmentId } = matchedData(req);
       console.log('Extracted departmentId:', departmentId);
+
       
       try {
         const classes = await classCollection.findOne({departmentId: departmentId}).lean()
@@ -407,8 +409,93 @@ app.get("/mainpage", (req, res) => {
 });
 
 
+app.post("/removeListings" , async (req, res) => {
+  const result = validationResult(req);
+  if(result.isEmpty()) {
+    try {
+      await tryMongooseConnection();
+    } catch (error) {
+      res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+      console.log(error)
+      return;
+    }
+  }
+  try {
+    const user = await getUserFromCookie(req?.cookies?.session)
+    user.listings = []
+    user.save();
 
 
+
+
+    res.status(201).json({messages: ["successfully removed listing"]});
+  }catch (error) {
+    res.status(400).send({errors: ['could not get user email from cookie!']}) 
+    console.log(error);
+  }
+
+})
+
+
+app.post("/removeListing" , async (req, res) => {
+  const result = validationResult(req);
+  if(result.isEmpty()) {
+    try {
+      await tryMongooseConnection();
+    } catch (error) {
+      res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+      console.log(error)
+      return;
+    }
+  }
+
+  const listingId = (req.body.listingId);
+  try {
+    const user = await getUserFromCookie(req?.cookies?.session)
+   
+
+    
+
+     
+      
+     
+     // console.log(user.listings);
+      const foundListing = user.listings.find(listing => listing._id.toString() === listingId);
+
+
+      if (!foundListing) {
+        res.status(404).json({ error: 'Listing not found' });
+        return;
+      }
+      const classes = await classCollection.findOne({departmentId: foundListing.departmentId})
+      
+      
+      const updatedListings = classes.listings.filter(listing => listing._id.toString() !== listingId);
+      
+      await classCollection.updateOne({ departmentId: foundListing.departmentId }, { $set: { listings: updatedListings } });
+      const updatedListings1 = user.listings.filter(listing => listing._id.toString() !== listingId);
+
+    // Assuming user.listings is an array
+      user.listings = updatedListings1;
+
+    // Save the updated user to the database
+      await user.save();
+
+
+
+      res.status(201).json({messages: ["successfully removed listing"]});
+
+    
+    
+
+  } catch (error) {
+    res.status(400).send({errors: ['could not get user email from cookie!']}) 
+    console.log(error);
+  }
+
+
+
+});
 
 app.get("/getuser", async (req, res) => {
   const result = validationResult(req);
