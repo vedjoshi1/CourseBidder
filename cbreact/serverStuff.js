@@ -350,7 +350,7 @@ app.get("/getListings", query('departmentId'), async (req, res) => {
       }
 
       
-      const { departmentId } = matchedData(req);
+     
       
       
       try {
