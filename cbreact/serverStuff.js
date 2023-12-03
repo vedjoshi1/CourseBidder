@@ -423,7 +423,7 @@ app.post("/removeListings" , async (req, res) => {
   try {
     const user = await getUserFromCookie(req?.cookies?.session)
     user.listings = []
-    user.save();
+    await user.save();
 
 
 
