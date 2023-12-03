@@ -32,10 +32,13 @@ const SignIn = () => {
 
     if (!email) {
       setErrEmail("Enter your email");
+      setSuccessMsg("")
     }
 
     if (!password) {
-      setErrPassword("Create a password");
+      setErrPassword("Enter your password.");
+      setSuccessMsg("")
+
     }
     // ============== Getting the value ==============
     if (email && password) {
@@ -68,7 +71,7 @@ const SignIn = () => {
 
       }catch(error){
         setSuccessMsg(
-          `Horrible Problem`
+          `Incorrect Email or Password. Try again.`
         );
         console.error('Error logging in user:', error.response ? error.response.data : error.message);
       }
@@ -76,8 +79,7 @@ const SignIn = () => {
 
 
       
-      setEmail("");
-      setPassword("");
+    
     }
   };
   return (
@@ -144,27 +146,19 @@ const SignIn = () => {
         </div>
       </div>
       <div className="w-full lgl:w-1/2 h-full">
-        {successMsg ? (
-          <div className="w-full lgl:w-[500px] h-full flex flex-col justify-center">
-            <p className="w-full px-4 py-10 text-green-500 font-medium font-titleFont">
-              {successMsg}
-            </p>
-            <Link to="/signup">
-              <button
-                className="w-full h-10 bg-primeColor text-gray-200 rounded-md text-base font-titleFont font-semibold 
-            tracking-wide hover:bg-black hover:text-white duration-300"
-              >
-                Sign Up
-              </button>
-            </Link>
-          </div>
-        ) : (
+          (
           <form className="w-full lgl:w-[450px] h-screen flex items-center justify-center">
             <div className="px-6 py-4 w-full h-[90%] flex flex-col justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-primeColor">
               <h1 className="font-titleFont underline underline-offset-4 decoration-[1px] font-semibold text-3xl mdl:text-4xl mb-4">
                 Sign in
               </h1>
               <div className="flex flex-col gap-3">
+                {successMsg && (
+                  <p className="text-sm text-red-500 font-titleFont font-semibold px-4 ml-[-15px]">
+                    <span className="font-bold italic mr-1">!</span>
+                    {successMsg}
+                  </p>
+                  )}
                 {/* Email */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
@@ -222,7 +216,7 @@ const SignIn = () => {
               </div>
             </div>
           </form>
-        )}
+        )
       </div>
     </div>
   );
