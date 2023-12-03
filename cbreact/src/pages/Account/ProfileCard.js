@@ -7,20 +7,10 @@ import { FaPhoneAlt } from "react-icons/fa";
 
 
 
-//   fetch("http://localhost:3000/login", {
-//   method: "POST",
-//   body: JSON.stringify({
-//     username: "johndoe@gmail.com",
-//     password: "john"
-//   }),
-//   headers: {
-//     "Content-type": "application/json; charset=UTF-8"
-//   }
-// });
 
   function getProfile() {
     return fetch('/getuser', {
-      method: 'GET',
+      method: 'POST',
       credentials: 'include' 
     })
     .then(response => {

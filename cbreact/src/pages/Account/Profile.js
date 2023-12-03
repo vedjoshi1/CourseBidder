@@ -6,42 +6,30 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import ProfileCard from "./ProfileCard";
 
 
-// fetch("http://localhost:3000/login", {
-//   method: "POST",
-//   body: JSON.stringify({
-//     username: "johndoe@gmail.com",
-//     password: "john"
-//   }),
-//   headers: {
-//     "Content-type": "application/json; charset=UTF-8"
-//   }
-// });
-
-
 function getProfile() {
-    return fetch('/getuser', {
-      method: 'GET',
-      credentials: 'include' 
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch profile');
-      }
-      return response.json();
-    })
-    .then(profileData => {
-      return profileData;
-    })
-    .catch(error => {
-      console.error('Error fetching profile:', error);
-    });
-  }
+  return fetch('/getuser', {
+    method: 'POST',
+    credentials: 'include' 
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to fetch profile');
+    }
+    return response.json();
+  })
+  .then(profileData => {
+    return profileData;
+  })
+  .catch(error => {
+    console.error('Error fetching profile:', error);
+  });
+}
 
-  function checkPassword(username, password) {
+  function checkPassword(email, password) {
     return fetch('/checkpassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password })
     })
     .then(response =>  response.json())
     .then(profileData => profileData)
@@ -50,15 +38,15 @@ function getProfile() {
 
   }
 
-  function updateProfile(fullname, username, password) {
+  function updateProfile(fullname, email, password) {
     return fetch('/getuser', {
-        method: 'GET',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullname, username, password })
+        body: JSON.stringify({ fullname, email, password })
     })
     .then(response =>  response.json())
     .then(profileData => profileData)
-    .catch(error => console.error('Error fetching password:', error));
+    .catch(error => console.error('Error fetching profile:', error));
   }
 
 
@@ -131,8 +119,8 @@ const Profile = () => {
   useEffect(() => {
     getProfile().then(profileData => {
       if (profileData) {
-        setClientName(profileData.user.fullName || "Not logged in.")
-        setEmail(profileData.user.email || "Not logged in.")
+        setClientName(profileData.user.fullName || "Not logged in.");
+        setEmail(profileData.user.email || "Not logged in.");
       }
     });
   }, []);
@@ -162,6 +150,7 @@ const Profile = () => {
 
         checkPassword(email, password).then(profileData => {
 
+            console.log(profileData)
               if(!profileData.correct)
               {
                 setSuccessMsg("")
@@ -280,7 +269,7 @@ const Profile = () => {
                     value={password}
                     className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
                     type="password"
-                    placeholder="Edit password"
+                    placeholder="Confirm Password"
                   />
                   {errPassword && (
                     <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
