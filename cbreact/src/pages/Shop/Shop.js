@@ -9,6 +9,26 @@ import axios from 'axios';
 
 const Shop = () => {
   const [apiData, setApiData] = useState([]);
+  const [removingAll, setRemovingAll] = useState(false);
+
+  const removeAllListings = async() => {
+    try {
+      const apiUrl = "/removeListings";
+      const response = await axios.post(apiUrl);
+
+      if (response.status === 201){
+        setRemovingAll(true);
+        console.log("Successfully removed")
+      }
+
+    } catch(error) {
+      console.error("Error in removing listings");
+
+    }
+  };
+
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +42,7 @@ const Shop = () => {
     };
 
     fetchData();
-  }, []);
+  },[removingAll]); 
 
   const handleButtonClick = (item) => {
     // Handle button click for the specific item
@@ -70,6 +90,7 @@ const Shop = () => {
           </div>
 
           <button
+            onClick={removeAllListings}
             className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
           >
             Remove All Listings
