@@ -350,8 +350,10 @@ app.get("/getListings", query('departmentId'), async (req, res) => {
       }
 
       
-     
-      
+
+      const { departmentId } = matchedData(req);
+      console.log('Extracted departmentId:', departmentId);
+
       
       try {
         const classes = await classCollection.findOne({departmentId: departmentId}).lean()
