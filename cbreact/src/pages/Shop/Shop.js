@@ -4,7 +4,7 @@ import Pagination from "../../components/pageProps/shopPage/Pagination";
 import ProductBanner from "../../components/pageProps/shopPage/ProductBanner";
 import ShopSideNav from "../../components/pageProps/shopPage/ShopSideNav";
 import { useDispatch } from "react-redux";
-
+import axios from 'axios';
 const Shop = () => {
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const itemsPerPageFromBanner = (itemsPerPage) => {
@@ -16,9 +16,12 @@ const Shop = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const departmentId = 'YOUR_DEPARTMENT_ID';
-      //  const response = await axios.get(`/getListings?departmentId=${departmentId}`);
-      //  setListings(response.data);
+       
+        const response = await axios.get(`/getListingsFromUser`);
+      
+        console.log(response.data);
+
+        //This will log a JSON of all of the listings of the CURRENTLY LOGGED IN USER
       } catch (error) {
         console.error('Error fetching listings:', error);
         // Handle error if needed
