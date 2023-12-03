@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import { Breadcrumb } from "@chakra-ui/react";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { FaShoppingCart } from "react-icons/fa";
+import { art } from "../../assets/images"
+import Image from "../../components/designLayouts/Image"
 
 function EachListing ({ _id, email, price, time }) {
   return (
@@ -112,14 +114,14 @@ const Home = () => {
   const itemID = location.state ? location.state.itemID : undefined;
 
   return (
-    <div className="w-full mx-auto">
+    <div className="flex justify-center w-full mx-auto">
       {itemID ? (
         <ShopPage itemID={itemID} />
       ) : (
         <>
-          <div>
-            Fuck Eggert
-          </div>
+            <div className="flex w-[80%]">
+              <Image imgSrc={art} />
+            </div>
         </>
       )}
     </div>

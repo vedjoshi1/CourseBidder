@@ -1,4 +1,5 @@
 import logo from "./cblogo.png";
+import art from "./cbart.png";
 import logoLight from "./cblogo_light.png";
 import bannerImgOne from "./banner/bannerImgOne.webp";
 import bannerImgTwo from "./banner/bannerImgTwo.webp";
@@ -34,6 +35,7 @@ import emptyCart from "../images/emptyCart.png";
 export {
   logo,
   logoLight,
+  art,
   bannerImgOne,
   bannerImgTwo,
   bannerImgThree,
