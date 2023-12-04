@@ -6,10 +6,11 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { resetCart } from "../../redux/orebiSlice";
 import { emptyCart } from "../../assets/images/index";
 import ItemCard from "./ItemCard";
+import selectCartItems from '../../redux/cartSlice';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.orebiReducer.products);
+  const products = useSelector(selectCartItems);
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="Cart" />

@@ -7,12 +7,20 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { FaShoppingCart } from "react-icons/fa";
 import { art } from "../../assets/images"
 import Image from "../../components/designLayouts/Image"
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/cartSlice';
 
 function EachListing ({ _id, email, price, time }) {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = () => {
+    const item = { _id, email, price, time };
+    dispatch(addToCart(item));
+  };
   return (
     <div className="w-full relative group">
       <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
-        <button className="text-[#767676]">
+        <button className="text-[#767676]" onClick={handleAddToCart}>
           <FaShoppingCart />
         </button>
         <div className="flex items-center justify-between font-titleFont">
