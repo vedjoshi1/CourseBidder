@@ -10,31 +10,38 @@ import Image from "../../components/designLayouts/Image"
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
 
+
+
 function EachListing ({ _id, email, price, time }) {
   const dispatch = useDispatch();
 
+  const [message, setMessage] = useState("");
+
+
   const handleAddToCart = () => {
     dispatch(addToCart("Yes"));
+    setMessage("Successfully added to cart.")
     //const item = { _id, email, price, time };
     //dispatch(addToCart(item));
   };
   return (
-    <div className="w-full relative group">
-      <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
-        <button className="text-[#767676]" onClick={handleAddToCart}>
-          <FaShoppingCart />
-        </button>
-        <div className="flex items-center justify-between font-titleFont">
-          <h2 className="text-lg text-primeColor font-bold">
-            {email}
-          </h2>
-          <p className="text-[#767676] text-[14px]">${price}</p>
-        </div>
-        <div>
-          <p className="text-[#767676] text-[14px]">{time}</p>
-        </div>
+  <div className="w-full relative group">
+    <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
+      <button className="text-[#767676] flex items-center" onClick={handleAddToCart}>
+        <FaShoppingCart />
+        <span className="ml-2">{message}</span> 
+      </button>
+      <div className="flex items-center justify-between font-titleFont">
+        <h2 className="text-lg text-primeColor font-bold">
+          {email}
+        </h2>
+        <p className="text-[#767676] text-[14px]">${price}</p>
+      </div>
+      <div>
+        <p className="text-[#767676] text-[14px]">{time}</p>
       </div>
     </div>
+  </div>
   );
 
 }
