@@ -78,6 +78,12 @@ const Header = () => {
           link: "/signup",
           showIfLoggedOut: true, // Only show if logged out
         },
+        {
+          _id: 1005,
+          title: "Sign Out",
+          link: "/signin",
+          showIfLoggedOut: false,
+        }
       ];
 
       // Filter navBarList based on login status
