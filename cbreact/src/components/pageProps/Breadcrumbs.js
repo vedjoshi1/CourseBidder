@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { useLocation } from "react-router-dom";
 
-const Breadcrumbs = ({ prevLocation, title }) => {
+const Breadcrumbs = ({ prevLocation, title, undercard = "na" }) => {
   const location = useLocation();
   const [locationPath, setLocationPath] = useState("");
   useEffect(() => {
@@ -21,7 +21,7 @@ const Breadcrumbs = ({ prevLocation, title }) => {
           <HiOutlineChevronRight />
         </span>
         <span className="capitalize font-semibold text-primeColor">
-          {locationPath}
+          {undercard === "na" ? locationPath : undercard}
         </span>
       </p>
     </div>

@@ -8,12 +8,69 @@ import { FaShoppingCart } from "react-icons/fa";
 import { art } from "../../assets/images"
 import Image from "../../components/designLayouts/Image"
 import { useDispatch } from 'react-redux';
+
 import { addToCart, updateItemID } from '../../redux/cartSlice';
 import { ItemCard } from '../Cart/ItemCardCart';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { ScatterChart } from '@mui/x-charts/ScatterChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Box, ThemeProvider, createTheme } from '@mui/system';
+import { Scatterplot } from "./Scatterplot";
+
+const scat_data = [
+  {
+    x: 2,
+    y: 4,
+  },
+  {
+    x: 3,
+    y: 5,
+  },
+  {
+    x: 1,
+    y: 2,
+  },
+  {
+    x: 4,
+    y: 8,
+  },
+  {
+    x: 7,
+    y: 8,
+  },
+  {
+    x: 9,
+    y: 9,
+  },
+  {
+    x: 6,
+    y: 8,
+  },
+  {
+    x: 5,
+    y: 4,
+  },
+  {
+    x: 7,
+    y: 5,
+  },
+  {
+    x: 8,
+    y: 9,
+  },
+  {
+    x: 6,
+    y: 9,
+  },
+  {
+    x: 3,
+    y: 6,
+  },
+  {
+    x: 2,
+    y: 1,
+  },
+];
 
 
 function EachListing ({ _id, email, price, time, itemID }) {
@@ -70,8 +127,13 @@ function Items({ currentItems, itemID }) {
     </>
   )
 }
+
+function sortByPrice(items) {
+  return items.slice().sort((a, b) => a.price - b.price);
+}
+
 const ShopPage = ({ itemID }) => {
-  const [apiData, setApiData] = useState(null);
+  let [apiData, setApiData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,6 +165,10 @@ const ShopPage = ({ itemID }) => {
 
   if (numberOfItems > 0){
 
+    apiData = sortByPrice(apiData);
+
+
+
     console.log("I'm right here now!")
 
     const priceFrequency = {};
@@ -128,9 +194,9 @@ const ShopPage = ({ itemID }) => {
     // Convert the price frequency object to an array of objects with index as id
     for (const [price, frequency] of Object.entries(priceFrequency)) {
       frequencyArray.push({
-        id: frequencyArray.length.toString(), // Use index as id
-        x: parseFloat(price), // Convert the price back to a number
-        y: frequency,
+        x: parseFloat(price),
+        y: frequency, // Convert the price back to a number
+        
       });
 
       x_dat.push(frequency)
@@ -141,14 +207,28 @@ const ShopPage = ({ itemID }) => {
 
     }
 
-    console.log(frequencyArray);
+    console.log("freq arrayy", frequencyArray);
+
+    console.log("This is my data!!!", scat_data)
+
+    const customData = [
+      {
+          x: 2,
+          y: 4,
+        },
+        {
+          x: 3,
+          y: 5,
+        },
+    ]
+
+    console.log("small set", customData)
 
 
-
-
+    console.log("Seems like I get here!")
     return (
       <div className="flex flex-col">
-  <Breadcrumbs title={itemID} />
+  <Breadcrumbs title={itemID} undercard="Items Sorted From Lowest to Highest"/>
 
   <div className="md:flex md:space-x-8">
     <div className="flex-shrink-0 w-full md:w-3/5 max-h-screen overflow-y-auto">
@@ -157,8 +237,13 @@ const ShopPage = ({ itemID }) => {
       </div>
     </div>
 
-    <div className="flex-shrink-0 w-full md:w-2/5">
-      <ScatterChart
+    <div className="flex-shrink-0 w-full md:w-2/5 mt-[-60px]">
+      <div className="flex pl-10">
+        <Scatterplot width={600} height={600} data={frequencyArray} />
+      </div>
+      
+      
+      {/* <ScatterChart
 
         
       
@@ -198,11 +283,11 @@ const ShopPage = ({ itemID }) => {
           },
         ]}
 
-      />
+      /> */}
 
-      <div>
-        Average is {avg}
-      </div>
+        <h2 className="text-lg text-primeColor font-bold text-center italic">
+          CURRENT AVERAGE PRICE: {avg}
+        </h2>
     </div>
     
   </div>
