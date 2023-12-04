@@ -14,8 +14,9 @@ function EachListing ({ _id, email, price, time }) {
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    const item = { _id, email, price, time };
-    dispatch(addToCart(item));
+    dispatch(addToCart("Yes"));
+    //const item = { _id, email, price, time };
+    //dispatch(addToCart(item));
   };
   return (
     <div className="w-full relative group">
