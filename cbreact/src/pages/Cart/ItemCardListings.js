@@ -8,6 +8,7 @@ import {
   decreaseQuantity,
   increaseQuantity,
 } from "../../redux/orebiSlice";
+import { updateItemSoldStatus } from "../../redux/cartSlice";
 
 const formatTime = (timeString) => {
   const options = {
@@ -27,6 +28,7 @@ const getFormattedTime = (timeString) => {
 
 const ItemCard = ({ item }) => {
   const [isRemoved, setRemoved] = useState(false);
+  const [buyButtonText, setBuyButtonText] = useState("Still Listed");
 
   const handleRemoveItem = async () => {
     try {
@@ -42,6 +44,10 @@ const ItemCard = ({ item }) => {
     }
   };
 
+  const handleBuyClick = () => {
+    setBuyButtonText("Sold");
+  }
+
   if (isRemoved){
     return null;
   }
@@ -53,26 +59,23 @@ const ItemCard = ({ item }) => {
           onClick={handleRemoveItem}
           className="text-primeColor hover:text-red-500 duration-300 cursor-pointer"
         />
-        <h1 className="font-titleFont font-semibold">{item.departmentId}</h1>
+        <p>{item.departmentId}</p>
       </div>
       <div className="col-span-5 mdl:col-span-3 flex items-center justify-between py-4 mdl:py-0 px-4 mdl:px-0 gap-6 mdl:gap-0">
-        <div className="flex w-1/3 items-center text-lg font-semibold">
+        <div className="flex w-1/7 items-center text-lg font-semibold">
           ${item.price}
         </div>
-        <div className="w-1/3 flex items-center justify-center gap-6 text-lg">
+        <div className="w-1/5 flex items-center justify-center gap-6 text-lg">
           <button
-            // An onclick function should go here
             className="py-2 px-6 bg-green-700 text-white font-semibold uppercase mb-4 hover:bg-green-800 duration-300"
+            onClick={handleBuyClick}
+            disabled={buyButtonText === "Sold"} // Disable the button if the item is already sold
           >
-            {item.isSold ? (
-              <p className="text-white font-semibold">Sold</p>
-            ) : (
-              <p className="text-white font-semibold">Still Listed</p>
-            )}
+            <p className="text-white font-semibold">{buyButtonText}</p>
           </button>
         </div>
         <div className="w-1/3 flex items-center font-titleFont font-bold text-lg">
-          <p>{getFormattedTime(item.timePosted)}</p>
+          <p>{item.email}</p>
         </div>
       </div>
     </div>

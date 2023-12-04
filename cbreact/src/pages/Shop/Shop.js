@@ -4,7 +4,7 @@ import Pagination from "../../components/pageProps/shopPage/Pagination";
 import ProductBanner from "../../components/pageProps/shopPage/ProductBanner";
 import ShopSideNav from "../../components/pageProps/shopPage/ShopSideNav";
 import { useDispatch } from "react-redux";
-import ItemCard from "../Cart/ItemCard";
+import ItemCard from "../Cart/ItemCardListings";
 import axios from 'axios';
 
 const Shop = () => {
@@ -26,7 +26,6 @@ const Shop = () => {
 
     }
   };
-
 
 
 
@@ -77,7 +76,7 @@ const Shop = () => {
             <h2 className="col-span-2">Class Name</h2>
             <h2>Price</h2>
             <h2>Status</h2>
-            <h2>Time Posted</h2>
+            <h2>Email</h2>
           </div>
           <div className="mt-5">
             {apiData.map((item) => (

@@ -8,15 +8,17 @@ import { FaShoppingCart } from "react-icons/fa";
 import { art } from "../../assets/images"
 import Image from "../../components/designLayouts/Image"
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../../redux/cartSlice';
+import { addToCart, updateItemID } from '../../redux/cartSlice';
+import { ItemCard } from '../Cart/ItemCardCart';
 
-function EachListing ({ _id, email, price, time }) {
+function EachListing ({ _id, email, price, time, itemID }) {
   const dispatch = useDispatch();
 
   const handleAddToCart = () => {
-    dispatch(addToCart("Yes"));
-    //const item = { _id, email, price, time };
-    //dispatch(addToCart(item));
+    //dispatch(addToCart(email, price, time));
+    dispatch(updateItemID(itemID));
+    const item = { _id, email, price, time, itemID };
+    dispatch(addToCart(item));
   };
   return (
     <div className="w-full relative group">
@@ -39,7 +41,7 @@ function EachListing ({ _id, email, price, time }) {
 
 }
 
-function Items({ currentItems }) {
+function Items({ currentItems, itemID }) {
   console.log(currentItems)
   return (
     <>
@@ -51,6 +53,7 @@ function Items({ currentItems }) {
               email= {item.email}
               price= {item.price}
               time= {item.timePosted}
+              itemID={itemID}
             />
           </div>
         )
@@ -91,7 +94,7 @@ const ShopPage = ({ itemID }) => {
       <div className="max-w-container mx-auto px-4">
         <Breadcrumbs title={itemID} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <Items currentItems={apiData} />
+          <Items currentItems={apiData} itemID={itemID}/>
 
 
         </div>
