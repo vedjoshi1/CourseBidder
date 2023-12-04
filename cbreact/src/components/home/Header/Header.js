@@ -5,14 +5,37 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { logo, logoLight } from "../../../assets/images";
 import Image from "../../designLayouts/Image";
-import { navBarList } from "../../../constants";
 import Flex from "../../designLayouts/Flex";
+
+
+function getProfile() {
+  return fetch('/getuser', {
+    method: 'POST',
+    credentials: 'include' 
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Failed to fetch profile');
+    }
+    return response.json();
+  })
+  .then(profileData => {
+    return profileData;
+  })
+  .catch(error => {
+    console.error('Error fetching profile:', error);
+  });
+}
+
+
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(true);
   const [sidenav, setSidenav] = useState(false);
   const [category, setCategory] = useState(false);
   const [brand, setBrand] = useState(false);
+  const [navBarList, setNavBarList] = useState([]);
+
   const location = useLocation();
   useEffect(() => {
     let ResponsiveMenu = () => {
@@ -25,6 +48,43 @@ const Header = () => {
     ResponsiveMenu();
     window.addEventListener("resize", ResponsiveMenu);
   }, []);
+
+  useEffect(() => {
+    getProfile().then(profileData => {
+      const isLoggedIn = Boolean(profileData);
+
+      const tempNavBarList = [
+        {
+          _id: 1001,
+          title: "Home",
+          link: "/",
+          showIfLoggedOut: false,
+        },
+        {
+          _id: 1002,
+          title: "Listings",
+          link: "/shop",
+          showIfLoggedOut: false,
+        },
+        {
+          _id: 1003,
+          title: "Login",
+          link: "/signin",
+          showIfLoggedOut: true, // Only show if logged out
+        },
+        {
+          _id: 1004,
+          title: "Sign Up",
+          link: "/signup",
+          showIfLoggedOut: true, // Only show if logged out
+        },
+      ];
+
+      // Filter navBarList based on login status
+      const updatedNavBarList = tempNavBarList.filter(item => !item.showIfLoggedOut || !isLoggedIn);
+      setNavBarList(updatedNavBarList);
+    });
+  }, []); // Empty dependency array to run only on mount
 
   return (
     <div className="w-full h-20 bg-white sticky top-0 z-50 border-b-[1px] border-b-gray-200">

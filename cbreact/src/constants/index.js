@@ -15,29 +15,6 @@ import {
 
 import axios from 'axios';
 
-// =================== NavBarList Start here ====================
-export const navBarList = [
-  {
-    _id: 1001,
-    title: "Home",
-    link: "/",
-  },
-  {
-    _id: 1002,
-    title: "Listings",
-    link: "/shop",
-  },
-  {
-    _id: 1003,
-    title: "Login",
-    link: "/signin",
-  },
-  {
-    _id: 1004,
-    title: "Sign Up",
-    link: "/signup",
-  },
-];
 
 // =================== Special Offer data End here ==============
 
