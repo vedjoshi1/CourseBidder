@@ -18,12 +18,8 @@
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-<<<<<<< HEAD
     "d3": "^7.8.5",
     "express": "^4.17.1",
-=======
-    "express": "^4.18.2",
->>>>>>> 36fa9aea0514a779f08ef563bac207416ba4c34c
     "express-validator": "^7.0.1",
     "framer-motion": "^6.3.0",
     "helmet": "^4.6.0",
