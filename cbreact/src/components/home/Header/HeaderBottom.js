@@ -9,10 +9,10 @@ import { useSelector } from "react-redux";
 import { paginationItems } from "../../../constants";
 import { classes } from "../../../classes";
 import axios from "axios";
-
+import { selectCartItems } from '../../../redux/cartSlice';
 
 const HeaderBottom = () => {
-  const products = useSelector((state) => state.orebiReducer.products);
+  const products = useSelector(selectCartItems);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
