@@ -12,9 +12,9 @@ function EachListing ({ _id, email, price, time }) {
   return (
     <div className="w-full relative group">
       <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
-        <span className="text-[#767676]">
+        <button className="text-[#767676]">
           <FaShoppingCart />
-        </span>
+        </button>
         <div className="flex items-center justify-between font-titleFont">
           <h2 className="text-lg text-primeColor font-bold">
             {email}
