@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
-import { resetCart } from "../../redux/orebiSlice";
+import { resetCart } from "../../redux/cartSlice";
 import { emptyCart } from "../../assets/images/index";
 import ItemCard from "./ItemCardCart";
 import { selectCartItems } from '../../redux/cartSlice';
@@ -25,7 +25,7 @@ const Cart = () => {
           <div className="mt-5">
             {products.map((item) => (
               <div key={item._id}>
-                <ItemCard item={item} />
+                <ItemCard item={item} uniqueIdentifier={`${item.email}_${item.itemID}`} />
               </div>
             ))}
           </div>

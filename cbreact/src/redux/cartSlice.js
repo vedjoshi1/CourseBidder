@@ -8,7 +8,21 @@ const cartSlice = createSlice({
   },
   reducers: {
     addToCart: (state, action) => {
-      state.cartItems.push(action.payload);
+      const newItem = action.payload;
+      const { email, itemID } = newItem;
+
+      // Check if an item with the same unique identifier already exists in the cart
+      const existingItem = state.cartItems.find(
+        (item) => item.email === email && item.itemID === itemID
+      );
+
+      if (!existingItem) {
+        // Item doesn't exist, add it to the cart
+        state.cartItems.push(newItem);
+      } else {
+        // Item already exists
+        alert('Item already exists in cart.');
+      }
     },
     updateItemSoldStatus: (state, action) => {
       const { itemId, isSold } = action.payload;
@@ -22,10 +36,20 @@ const cartSlice = createSlice({
     updateItemID: (state, action) => {
       state.itemID = action.payload;
     },
+    resetCart: (state) => {
+      state.cartItems = [];
+    },
+    deleteItem: (state, action) => {
+      const { payload: uniqueIdentifier } = action;
+
+      state.cartItems = state.cartItems.filter(
+        (item) => `${item.email}_${item.itemID}` !== uniqueIdentifier
+      );
+    },
   },
 });
 
-export const { addToCart, updateItemSoldStatus, updateItemID } = cartSlice.actions;
+export const { addToCart, updateItemSoldStatus, updateItemID, resetCart, deleteItem } = cartSlice.actions;
 export const selectCartItems = (state) => state.cart.cartItems;
 export const selectItemID = (state) => state.cart.itemID;
 export default cartSlice.reducer;
