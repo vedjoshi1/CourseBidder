@@ -532,6 +532,34 @@ app.post("/getuser", async (req, res) => {
   }
 });
 
+
+app.get("/numListings", async (req, res) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+    try {
+        await tryMongooseConnection();
+      } catch (error) {
+        res.status(500).json({errors: ["could not connect to mongodb"]}).send()
+        console.log(error)
+        return;
+      }
+      try {
+        const user = await getUserFromCookie(req?.cookies?.session)
+        res.status(201).json({num: user.listings.length});
+
+      } catch (error) {
+        res.status(400).send({errors: ['could not get user email from cookie!']}) 
+        console.log(error);
+      }
+  }else{
+
+    res.status(422).json({errors: result.array() }).send();
+    console.log("Issue with numListings")
+
+  }
+});
+
+
 app.post("/checkpassword", async (req, res) => {
   let { email, password } = req.body;
   const user = await userCollection.findOne({ email: email }).lean()
