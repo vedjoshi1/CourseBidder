@@ -240,7 +240,7 @@ const Profile = () => {
                     </p>
                   )}
                 </div>
-                {/* Phone Number
+                {/* Phone Number */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
                     Phone Number
@@ -250,7 +250,7 @@ const Profile = () => {
                     value={phone}
                     className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
                     type="text"
-                    placeholder="16099334711"
+                    placeholder="123-456-7890"
                   />
                   {errPhone && (
                     <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
@@ -258,7 +258,7 @@ const Profile = () => {
                       {errPhone}
                     </p>
                   )}
-                </div> */}
+                </div>
                 {/* Password */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
@@ -312,7 +312,7 @@ const Profile = () => {
         </div>
         <div className="flex w-[40%] items-start justify-center">
           <div className="flex flex-col max-h-container mt-10">
-            <ProfileCard />
+            <ProfileCard phoneProp={phone} />
           </div>
           
         </div>
