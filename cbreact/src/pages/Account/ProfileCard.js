@@ -27,11 +27,12 @@ import { FaPhoneAlt } from "react-icons/fa";
     });
   }
 
-const ProfileCard = () => {
+const ProfileCard = ( { phoneProp }) => {
 
       // State variables to store profile data
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phoneNumber, setphoneNumber] = useState('');
 
   // Fetch profile data when the component mounts
   useEffect(() => {
@@ -40,6 +41,7 @@ const ProfileCard = () => {
         setName(profileData.user.fullName || "Not logged in.")
         setEmail(profileData.user.email || "Not logged in.")
       }
+      setphoneNumber(phoneProp || "123-456-7890")
     }, []);
   }); // Empty dependency array means this runs once on mount
 
@@ -58,7 +60,7 @@ const ProfileCard = () => {
 
             <FaPhoneAlt />
             <div className="font-normal text-lg m-1">
-                4253013596
+                {phoneNumber}
             </div>
             
         </div>
