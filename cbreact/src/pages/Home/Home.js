@@ -7,30 +7,45 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { FaShoppingCart } from "react-icons/fa";
 import { art } from "../../assets/images"
 import Image from "../../components/designLayouts/Image"
+import { useDispatch } from 'react-redux';
+import { addToCart, updateItemID } from '../../redux/cartSlice';
+import { ItemCard } from '../Cart/ItemCardCart';
 
-function EachListing ({ _id, email, price, time }) {
+function EachListing ({ _id, email, price, time, itemID }) {
+  const dispatch = useDispatch();
+
+  const [message, setMessage] = useState("");
+
+
+  const handleAddToCart = () => {
+    //dispatch(addToCart(email, price, time));
+    dispatch(updateItemID(itemID));
+    const item = { _id, email, price, time, itemID };
+    dispatch(addToCart(item));
+  };
   return (
-    <div className="w-full relative group">
-      <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
-        <button className="text-[#767676]">
-          <FaShoppingCart />
-        </button>
-        <div className="flex items-center justify-between font-titleFont">
-          <h2 className="text-lg text-primeColor font-bold">
-            {email}
-          </h2>
-          <p className="text-[#767676] text-[14px]">${price}</p>
-        </div>
-        <div>
-          <p className="text-[#767676] text-[14px]">{time}</p>
-        </div>
+  <div className="w-full relative group">
+    <div className="max-w-80 py-6 flex flex-col gap-1 border-[1px] px-4">
+      <button className="text-[#767676] flex items-center" onClick={handleAddToCart}>
+        <FaShoppingCart />
+        <span className="ml-2">{message}</span> 
+      </button>
+      <div className="flex items-center justify-between font-titleFont">
+        <h2 className="text-lg text-primeColor font-bold">
+          {email}
+        </h2>
+        <p className="text-[#767676] text-[14px]">${price}</p>
+      </div>
+      <div>
+        <p className="text-[#767676] text-[14px]">{time}</p>
       </div>
     </div>
+  </div>
   );
 
 }
 
-function Items({ currentItems }) {
+function Items({ currentItems, itemID }) {
   console.log(currentItems)
   return (
     <>
@@ -42,6 +57,7 @@ function Items({ currentItems }) {
               email= {item.email}
               price= {item.price}
               time= {item.timePosted}
+              itemID={itemID}
             />
           </div>
         )
@@ -82,7 +98,7 @@ const ShopPage = ({ itemID }) => {
       <div className="max-w-container mx-auto px-4">
         <Breadcrumbs title={itemID} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <Items currentItems={apiData} />
+          <Items currentItems={apiData} itemID={itemID}/>
 
 
         </div>

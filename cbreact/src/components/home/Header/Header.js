@@ -93,7 +93,7 @@ const Header = () => {
           title: "Listings",
           link: "/shop",
           showIfLoggedOut: false,
-          showIfLoggedIn: false,
+          showIfLoggedIn: true,
         },
         {
           _id: 1003,

@@ -5,18 +5,19 @@ import { motion } from "framer-motion";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { resetCart } from "../../redux/orebiSlice";
 import { emptyCart } from "../../assets/images/index";
-import ItemCard from "./ItemCard";
+import ItemCard from "./ItemCardCart";
+import { selectCartItems } from '../../redux/cartSlice';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.orebiReducer.products);
+  const products = useSelector(selectCartItems);
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="Cart" />
       {products.length > 0 ? (
         <div className="pb-20">
           <div className="w-full h-20 bg-[#F5F7F7] text-primeColor hidden lgl:grid grid-cols-5 place-content-center px-6 text-lg font-titleFont font-semibold">
-            <h2 className="col-span-2">Product</h2>
+            <h2 className="col-span-2">Class Name</h2>
             <h2>Price</h2>
             <h2>Confirm Purchase</h2>
             <h2>Seller</h2>
