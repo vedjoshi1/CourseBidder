@@ -25,10 +25,17 @@ const cartSlice = createSlice({
     resetCart: (state) => {
       state.cartItems = [];
     },
+    deleteItem: (state, action) => {
+      const { payload: uniqueIdentifier } = action;
+
+      state.cartItems = state.cartItems.filter(
+        (item) => `${item.email}_${item.itemID}` !== uniqueIdentifier
+      );
+    },
   },
 });
 
-export const { addToCart, updateItemSoldStatus, updateItemID, resetCart } = cartSlice.actions;
+export const { addToCart, updateItemSoldStatus, updateItemID, resetCart, deleteItem } = cartSlice.actions;
 export const selectCartItems = (state) => state.cart.cartItems;
 export const selectItemID = (state) => state.cart.itemID;
 export default cartSlice.reducer;
