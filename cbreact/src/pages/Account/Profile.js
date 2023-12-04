@@ -122,6 +122,10 @@ const Profile = () => {
         setClientName(profileData.user.fullName || "Not logged in.");
         setEmail(profileData.user.email || "Not logged in.");
       }
+      else
+      {
+        window.location.pathname = '/signin'
+      }
     });
   }, []);
 
