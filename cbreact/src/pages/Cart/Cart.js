@@ -25,7 +25,7 @@ const Cart = () => {
           <div className="mt-5">
             {products.map((item) => (
               <div key={item._id}>
-                <ItemCard item={item} />
+                <ItemCard item={item} uniqueIdentifier={`${item.email}_${item.itemID}`} />
               </div>
             ))}
           </div>
