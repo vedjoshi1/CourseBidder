@@ -7,6 +7,33 @@ import { logo, logoLight } from "../../../assets/images";
 import Image from "../../designLayouts/Image";
 import Flex from "../../designLayouts/Flex";
 
+function signOut() {
+  return getProfile()
+    .then(profileData => {
+      if (!profileData || !profileData.user || !profileData.user.email) {
+        throw new Error('No profile data found');
+      }
+      return fetch('/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: profileData.user.email })
+      });
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Handle successful logout, like updating UI or redirecting
+      return data;
+    })
+    .catch(error => {
+      console.error('Error logging user out:', error);
+      // Handle errors, like showing a message to the user
+    });
+}
 
 function getProfile() {
   return fetch('/getuser', {
@@ -52,42 +79,55 @@ const Header = () => {
   useEffect(() => {
     getProfile().then(profileData => {
       const isLoggedIn = Boolean(profileData);
-
+  
       const tempNavBarList = [
         {
           _id: 1001,
           title: "Home",
           link: "/",
           showIfLoggedOut: false,
+          showIfLoggedIn: false,
         },
         {
           _id: 1002,
           title: "Listings",
           link: "/shop",
           showIfLoggedOut: false,
+          showIfLoggedIn: false,
         },
         {
           _id: 1003,
           title: "Login",
           link: "/signin",
-          showIfLoggedOut: true, // Only show if logged out
+          showIfLoggedOut: true,
+          showIfLoggedIn: false, // Only show if logged out
         },
         {
           _id: 1004,
           title: "Sign Up",
           link: "/signup",
-          showIfLoggedOut: true, // Only show if logged out
+          showIfLoggedOut: true,
+          showIfLoggedIn: false, // Only show if logged out
         },
         {
           _id: 1005,
           title: "Sign Out",
           link: "/signin",
           showIfLoggedOut: false,
+          showIfLoggedIn: true, // Only show if logged in
         }
       ];
-
+  
       // Filter navBarList based on login status
-      const updatedNavBarList = tempNavBarList.filter(item => !item.showIfLoggedOut || !isLoggedIn);
+      const updatedNavBarList = tempNavBarList.filter(item => {
+        // Show if not specifically meant for logged-out users or the user is logged out
+        const showIfLoggedOut = !item.showIfLoggedOut || !isLoggedIn;
+        // Show if not specifically meant for logged-in users or the user is logged in
+        const showIfLoggedIn = !item.showIfLoggedIn || isLoggedIn;
+  
+        return showIfLoggedOut && showIfLoggedIn;
+      });
+  
       setNavBarList(updatedNavBarList);
     });
   }, []); // Empty dependency array to run only on mount
@@ -116,6 +156,7 @@ const Header = () => {
                       className="flex font-normal hover:font-bold w-30 h-6 justify-center items-center px-6 text-base text-[#767676] hover:underline underline-offset-[4px] decoration-[1px] hover:text-[#262626] md:border-r-[2px] border-r-gray-300 hoverEffect last:border-r-0"
                       to={link}
                       state={{ data: location.pathname.split("/")[1] }}
+                      onClick={title === "Sign Out" ? signOut : null} 
                     >
                       <li>{title}</li>
                     </NavLink>
