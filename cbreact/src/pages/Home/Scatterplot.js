@@ -38,8 +38,8 @@ export const Scatterplot = ({ width, height, data }) => {
         cx={xScale(d.y)}
         cy={yScale(d.x)}
         opacity={1}
-        stroke="#2774AF"
-        fill="#2774AF"
+        stroke="#0098da"
+        fill="#0098da"
         fillOpacity={0.2}
         strokeWidth={1}
       />

@@ -19,24 +19,29 @@ async function seedDB() {
         await client.connect();
         console.log("Connected correctly to server");
 
+        const chosenClass = "HIST 1B"
+        const numList = 110;
+    
+
         const collection = client.db("CourseBidder").collection("classes");
 
-        const course = await collection.findOne( {departmentId: "COM SCI 31"});
+        const course = await collection.findOne( {departmentId: chosenClass});
 
         if (course){
-            console.log("Found CS31")
+            console.log("Found Course: ", chosenClass)
         } else {
             console.log("Did not find any course.")
+            return;
         }
 
         let fake_listings = [];
 
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < numList; i++) {
             let entry = {
                 _id: new ObjectId(),
                 email: faker.internet.email(),
-                departmentId: "COM SCI 31",
-                price: randomIntFromInterval(20,50),
+                departmentId: chosenClass,
+                price: randomIntFromInterval(30,80),
                 timePosted: faker.date.past(),
             }
 
@@ -46,7 +51,7 @@ async function seedDB() {
         
         console.log(fake_listings[0]);
 
-        await collection.updateOne( { departmentId: "COM SCI 31" } , { $set: { listings: fake_listings}} ); 
+        await collection.updateOne( { departmentId: chosenClass } , { $set: { listings: fake_listings}} ); 
         
         console.log("Database seeded.")
         client.close();
