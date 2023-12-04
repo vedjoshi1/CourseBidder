@@ -22,10 +22,13 @@ const cartSlice = createSlice({
     updateItemID: (state, action) => {
       state.itemID = action.payload;
     },
+    resetCart: (state) => {
+      state.cartItems = [];
+    },
   },
 });
 
-export const { addToCart, updateItemSoldStatus, updateItemID } = cartSlice.actions;
+export const { addToCart, updateItemSoldStatus, updateItemID, resetCart } = cartSlice.actions;
 export const selectCartItems = (state) => state.cart.cartItems;
 export const selectItemID = (state) => state.cart.itemID;
 export default cartSlice.reducer;
