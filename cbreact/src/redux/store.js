@@ -10,22 +10,19 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import orebiReducer from "./orebiSlice";
 import cartReducer from "./cartSlice";
 
-const persistConfig = {
+const cartPersistConfig = {
   key: "root",
   version: 1,
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, orebiReducer);
+const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
 
 export const store = configureStore({
   reducer: {
-    orebiReducer: persistedReducer,
-    cart: cartReducer,
-    // ... other reducers
+    cart: persistedCartReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

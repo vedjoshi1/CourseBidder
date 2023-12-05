@@ -31,6 +31,7 @@ import productOfTheYear from "./products/productOfTheYear.webp";
 // ============== Products End here ======================
 import paymentCard from "./payment.png";
 import emptyCart from "../images/emptyCart.png";
+import emptyListings from "../images/emptyListings.png";
 
 export {
   logo,
@@ -66,4 +67,5 @@ export {
   // ===================== Products End here ==============
   paymentCard,
   emptyCart,
+  emptyListings
 };

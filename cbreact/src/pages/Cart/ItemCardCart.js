@@ -2,12 +2,7 @@ import React from "react";
 import { ImCross } from "react-icons/im";
 import axios from "axios";
 import { useState } from "react";
-import {
-  deleteItem,
-  decreaseQuantity,
-  increaseQuantity,
-} from "../../redux/orebiSlice";
-import { updateItemSoldStatus } from "../../redux/cartSlice";
+import { deleteItem, updateItemSoldStatus } from "../../redux/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectItemID } from '../../redux/cartSlice';
 
@@ -27,23 +22,16 @@ const getFormattedTime = (timeString) => {
   return formatTime(timeString);
 };
 
-const ItemCard = ({ item }) => {
+const ItemCard = ({ item, uniqueIdentifier }) => {
   const [isRemoved, setRemoved] = useState(false);
   const [buyButtonText, setBuyButtonText] = useState("Buy");
   const itemID = item.itemID;
 
-  const handleRemoveItem = async () => {
-    try {
-      // Make an API request to remove the item from the database
-      console.log(item._id)
-      await axios.post("/removeListing", { listingId: item._id.toString() });
-      // Dispatch the action to remove the item from the Redux store
-      console.log("Removed the class")
-      setRemoved(true);
-    } catch (error) {
-      console.error("Error removing item:", error);
-      // Handle error if needed
-    }
+  const dispatch = useDispatch();
+
+  const handleRemoveItem = () => {
+    console.log('Removing Item with ID:', uniqueIdentifier);
+    dispatch(deleteItem(uniqueIdentifier));
   };
 
   const handleBuyClick = () => {
@@ -54,7 +42,7 @@ const ItemCard = ({ item }) => {
     return null;
   }
 
-  console.log(item.itemID)
+  //console.log(item.itemID)
   console.log(item.itemID)
 
   return (
