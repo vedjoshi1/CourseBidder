@@ -47,10 +47,6 @@ const ItemCard = ({ item, onRemovingListing}) => {
     }
   };
 
-  const handleBuyClick = () => {
-    setBuyButtonText("Sold");
-  }
-
   if (isRemoved){
     return null;
   }
@@ -71,7 +67,6 @@ const ItemCard = ({ item, onRemovingListing}) => {
         <div className="w-1/5 flex items-center justify-center gap-6 text-lg">
           <button
             className="py-2 px-6 bg-green-700 text-white font-semibold uppercase mb-4 hover:bg-green-800 duration-300"
-            onClick={handleBuyClick}
             disabled={buyButtonText === "Sold"} // Disable the button if the item is already sold
           >
             <p className="text-white font-semibold">{buyButtonText}</p>
