@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
-import Pagination from "../../components/pageProps/shopPage/Pagination";
-import ProductBanner from "../../components/pageProps/shopPage/ProductBanner";
-import ShopSideNav from "../../components/pageProps/shopPage/ShopSideNav";
 import { useDispatch } from "react-redux";
 import ItemCard from "../Cart/ItemCardListings";
 import { motion } from "framer-motion";

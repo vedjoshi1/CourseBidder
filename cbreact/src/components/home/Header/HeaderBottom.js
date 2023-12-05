@@ -6,7 +6,6 @@ import { MdAttachMoney } from "react-icons/md";
 import Flex from "../../designLayouts/Flex";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { paginationItems } from "../../../constants";
 import { classes } from "../../../classes";
 import axios from "axios";
 import { selectCartItems } from '../../../redux/cartSlice';

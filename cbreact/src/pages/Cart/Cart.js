@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { resetCart } from "../../redux/cartSlice";
-import { emptyCart } from "../../assets/images/index";
 import ItemCard from "./ItemCardCart";
+import { emptyCart } from "../../assets/images";
 import { selectCartItems } from '../../redux/cartSlice';
 
 const Cart = () => {

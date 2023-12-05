@@ -1,6 +1,5 @@
 import React, { useState, useEffect, use } from "react";
 import axios from "axios";
-import Product from "../../components/home/Products/Product";
 import { useLocation } from "react-router-dom";
 import { Breadcrumb } from "@chakra-ui/react";
 import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
@@ -16,61 +15,6 @@ import { ScatterChart } from '@mui/x-charts/ScatterChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Box, ThemeProvider, createTheme } from '@mui/system';
 import { Scatterplot } from "./Scatterplot";
-
-const scat_data = [
-  {
-    x: 2,
-    y: 4,
-  },
-  {
-    x: 3,
-    y: 5,
-  },
-  {
-    x: 1,
-    y: 2,
-  },
-  {
-    x: 4,
-    y: 8,
-  },
-  {
-    x: 7,
-    y: 8,
-  },
-  {
-    x: 9,
-    y: 9,
-  },
-  {
-    x: 6,
-    y: 8,
-  },
-  {
-    x: 5,
-    y: 4,
-  },
-  {
-    x: 7,
-    y: 5,
-  },
-  {
-    x: 8,
-    y: 9,
-  },
-  {
-    x: 6,
-    y: 9,
-  },
-  {
-    x: 3,
-    y: 6,
-  },
-  {
-    x: 2,
-    y: 1,
-  },
-];
 
 
 function EachListing ({ _id, email, price, time, itemID }) {
@@ -209,7 +153,7 @@ const ShopPage = ({ itemID }) => {
 
     console.log("freq arrayy", frequencyArray);
 
-    console.log("This is my data!!!", scat_data)
+ 
 
     const customData = [
       {
@@ -238,53 +182,13 @@ const ShopPage = ({ itemID }) => {
     </div>
 
     <div className="flex-shrink-0 w-full md:w-2/5 mt-[-60px]">
+      <h2 className="text-lg text-primeColor font-bold text-center italic">
+          CURRENT NUMBER OF LISTINGS: {apiData.length}
+        </h2>
       <div className="flex pl-10">
         <Scatterplot width={600} height={600} data={frequencyArray} />
       </div>
       
-      
-      {/* <ScatterChart
-
-        
-      
-        sx={{
-          //change left yAxis label styles
-         "& .MuiChartsAxis-left .MuiChartsAxis-tickLabel":{
-          strokeWidth:"0.7",
-          stroke:"#D2D7D3"
-         },
-         // change all labels fontFamily shown on both xAxis and yAxis
-         "& .MuiChartsAxis-tickContainer .MuiChartsAxis-tickLabel":{
-             fontFamily: "DM Sans",
-          },
-          // change bottom label styles
-          "& .MuiChartsAxis-bottom .MuiChartsAxis-tickLabel":{
-              strokeWidth:"0.5",
-              stroke:"#D2D7D3"
-           },
-            // bottomAxis Line Styles
-           "& .MuiChartsAxis-bottom .MuiChartsAxis-line":{
-            stroke:"#D2D7D3",
-            strokeWidth:"0.7"
-           },
-           //leftAxis Line Styles
-           "& .MuiChartsAxis-left .MuiChartsAxis-line":{
-            stroke:"#D2D7D3",
-            strokeWidth:"0.7"
-           }
-        }}
-
-        width={400}
-        height={400}
-        series={[
-          {
-            data: frequencyArray.map((v) => ({ x: v.y, y: v.x, id: v.id })),
-            color: "#2774af",
-          },
-        ]}
-
-      /> */}
-
         <h2 className="text-lg text-primeColor font-bold text-center italic">
           CURRENT AVERAGE PRICE: ${avg.toFixed(2)}
         </h2>
