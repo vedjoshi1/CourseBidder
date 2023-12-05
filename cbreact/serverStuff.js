@@ -49,15 +49,75 @@ async function getUserFromCookie(cookie) {
     }
   })
 }
+async function markItemSold(email, objectId) {
+  try {
+      await tryMongooseConnection();
+      if (!email) {
+          throw new Error("Email cannot be null");
+      }
+      const user = await getUserByEmail(email);
+      if (!user) {
+          throw new Error("User not found");
+      }
+      // Find the listing with the specified objectId
+      let foundListing = null;
+      for (const listing of user.listings) {
+          if (listing.departmentId === objectId) {
+              foundListing = listing;
+              break; // Stop iterating once a match is found
+          }
+      }
+      if (!foundListing) {
+          throw new Error("Listing not found");
+      }
+      foundListing.isSold = true;
+      // Save the updated user profile
+      const updatedUser = await user.save();
+      return updatedUser;
+  } catch (error) {
+      console.error(error.message);
+      throw new Error("Error marking item as sold");
+  }
+}
+async function getUserByEmail(email) {
+  try {
+      return await userCollection.findOne({ email: email });
+  } catch (error) {
+      console.error("Could not fetch user:", error);
+      throw new Error("Error fetching user");
+  }
+}
 
-// TODO: cookie based auth for all routes
-// function checkUser(req, res, next) {
-//   if ( req.path == '/') return next();
+async function isItemSold(email, objectId) {
+  try {
+    await tryMongooseConnection();
+    if (!email) {
+      throw new Error("Email cannot be null");
+    }
+    const user = await getUserByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    // Find the listing with the specified objectId
+    let foundListing = null;
+    for (const listing of user.listings) {
+      if (listing.departmentId === objectId) {
+        foundListing = listing;
+        break; // Stop iterating once a match is found
+      }
+    }
+    if (!foundListing) {
+      throw new Error("Listing not found");
+    }
+    // Return the value of isSold without modifying the user
+    return foundListing.isSold;
+  } catch (error) {
+    console.error(error.message);
+    throw new Error("Error checking if item is sold");
+  }
+}
 
-//   //authenticate user
-//   next();
-// }
-// app.all('*', checkUser);
+
 
 
 //-------------------mongodb-----------------//
@@ -98,18 +158,7 @@ const classSchema = new mongoose.Schema({
 });
 
 const classCollection = new mongoose.model("classes", classSchema);
-
-
-
-
-
-
 // const Listing = new mongoose.model("Listing", listingSchema);
-
-
-
-
-
 //-------------------mongodb-----------------//
 
 app.set("view engine", "ejs");
@@ -214,8 +263,6 @@ app.post("/login", body('email').trim().isEmail().escape(),  body('password').is
   }
 })
 
-
-
 app.post("/logout", body('email').trim().isEmail().escape(), async (req, res) => {
 
     const result = validationResult(req);
@@ -303,8 +350,6 @@ app.post("/makeListing", body('departmentId'), body('price').isFloat({min: 0}), 
 })
 
 app.get("/getListingsFromUser", query(), async (req, res) => {
-
-  
   const result = validationResult(req);
   if(result.isEmpty()) {
     try {
@@ -348,9 +393,6 @@ app.get("/getListings", query('departmentId'), async (req, res) => {
         console.log(error)
         return;
       }
-
-      
-
       const { departmentId } = matchedData(req);
       console.log('Extracted departmentId:', departmentId);
 
@@ -424,10 +466,6 @@ app.post("/removeListings" , async (req, res) => {
     const user = await getUserFromCookie(req?.cookies?.session)
     user.listings = []
     await user.save();
-
-
-
-
     res.status(201).json({messages: ["successfully removed listing"]});
   }catch (error) {
     res.status(400).send({errors: ['could not get user email from cookie!']}) 
@@ -475,20 +513,11 @@ app.post("/removeListing" , async (req, res) => {
 
     // Save the updated user to the database
       await user.save();
-
-
-
       res.status(201).json({messages: ["successfully removed listing"]});
-
-    
-    
-
   } catch (error) {
     res.status(400).send({errors: ['could not get user email from cookie!']}) 
     console.log(error);
   }
-
-
 
 });
 
@@ -519,11 +548,6 @@ app.post("/getuser", async (req, res) => {
         res.status(400).send({errors: ['could not get user email from cookie!']}) 
         console.log(error);
       }
-
-
-
-
-
   }else{
 
     res.status(422).json({errors: result.array() }).send();
@@ -531,6 +555,55 @@ app.post("/getuser", async (req, res) => {
 
   }
 });
+
+app.post("/markitemsold", async (req, res) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+      try {
+          await tryMongooseConnection();
+          const { email, id } = req.body;
+          // Mark the item as sold and update user profile
+          const updatedUser = await markItemSold(email, id,);
+          res.status(201).json({ message: 'User profile and item marked as sold successfully', user: updatedUser });
+      } catch (error) {
+          if (error.message === 'Listing not found') {
+              res.status(404).json({ errors: [error.message] });
+          } else {
+              res.status(400).json({ errors: ['Could not get/update user by email'] });
+          }
+          console.log(error);
+      }
+  } else {
+      res.status(422).json({ errors: result.array() }).send();
+      console.log("Inputs failed validation");
+  }
+});
+
+app.post("/isitemsold", async (req, res) => {
+  const result = validationResult(req);
+  if (result.isEmpty()) {
+      try {
+          await tryMongooseConnection();
+          const { email, id } = req.body;
+          // Check if the item is sold
+          const itemIsSold = await isItemSold(email, id);
+
+          res.status(200).json({ isSold: itemIsSold });
+      } catch (error) {
+          if (error.message === 'Listing not found') {
+              res.status(404).json({ errors: [error.message] });
+          } else {
+              res.status(400).json({ errors: ['Could not get user by email'] });
+          }
+          console.log(error);
+      }
+  } else {
+      res.status(422).json({ errors: result.array() }).send();
+      console.log("Inputs failed validation");
+  }
+});
+
+
 
 
 app.get("/numListings", async (req, res) => {

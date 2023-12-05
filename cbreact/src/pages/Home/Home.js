@@ -93,9 +93,6 @@ function EachListing ({ _id, email, price, time, itemID }) {
         <span className="ml-2">{message}</span> 
       </button>
       <div className="flex items-center justify-between font-titleFont">
-        <h2 className="text-lg text-primeColor font-bold">
-          {email}
-        </h2>
         <p className="text-[#767676] text-[14px]">${price}</p>
       </div>
       <div>

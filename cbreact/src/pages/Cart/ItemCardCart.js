@@ -28,15 +28,35 @@ const ItemCard = ({ item, uniqueIdentifier }) => {
   const itemID = item.itemID;
 
   const dispatch = useDispatch();
+  
+  const markitemsold = async (email, id) => {
+    try {
+        const apiUrl = 'http://localhost:3001/markitemsold'; // Update with your actual API endpoint for user data
+        const response = await axios.post(apiUrl, { email, id });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        // Handle the error appropriately (e.g., return a default user object or rethrow the error)
+        alert(error);
+        throw new Error('Error marking item as sold');
+    }
+};
 
-  const handleRemoveItem = () => {
-    console.log('Removing Item with ID:', uniqueIdentifier);
-    dispatch(deleteItem(uniqueIdentifier));
-  };
+  const handleBuyClick = async () => {
+    try { 
+        const valid = await markitemsold(item.email, item.itemID);
+        alert(valid);
+        setBuyButtonText("Sold");
+    } catch (error) {
+        alert("Item purchase unsuccesful");
+    }
+};
 
-  const handleBuyClick = () => {
-    setBuyButtonText("Sold");
-  }
+const handleRemoveItem = () => {
+  console.log('Removing Item with ID:', uniqueIdentifier);
+  dispatch(deleteItem(uniqueIdentifier));
+};
+
 
   if (isRemoved){
     return null;
@@ -58,17 +78,14 @@ const ItemCard = ({ item, uniqueIdentifier }) => {
         <div className="flex w-1/3 items-center text-lg font-semibold">
           ${item.price}
         </div>
-        <div className="w-1/3 flex items-center justify-center gap-6 text-lg">
+        <div className="w-2/3 flex items-center justify-left gap-6 text-lg">
           <button
-            className="py-2 px-6 bg-green-700 text-white font-semibold uppercase mb-4 hover:bg-green-800 duration-300"
+            className="py-4 px-20 bg-green-700 text-white font-semibold uppercase mb-4 hover:bg-green-800 duration-300"
             onClick={handleBuyClick}
             disabled={buyButtonText === "Sold"} // Disable the button if the item is already sold
           >
             <p className="text-white font-semibold">{buyButtonText}</p>
           </button>
-        </div>
-        <div className="w-1/3 flex items-center font-titleFont font-bold text-lg">
-          <p>{item.email}</p>
         </div>
       </div>
     </div>

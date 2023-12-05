@@ -20,7 +20,6 @@ const Cart = () => {
             <h2 className="col-span-2">Class Name</h2>
             <h2>Price</h2>
             <h2>Confirm Purchase</h2>
-            <h2>Seller</h2>
           </div>
           <div className="mt-5">
             {products.map((item) => (
