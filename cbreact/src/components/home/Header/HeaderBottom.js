@@ -39,9 +39,12 @@ const HeaderBottom = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [showSearchBar, setShowSearchBar] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(true);
+
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
+    setDropdownVisible(true); // Show the dropdown again when user types
   };
 
   
@@ -133,36 +136,51 @@ const HeaderBottom = () => {
               )}
             </div>
           ) : (
-            <div className= "w-full flex justify-start items-center gap-5">
-              <div className="w-[400px] h-[50px] justify-center text-base text-PrimeColor bg-white flex items-center gap-2 justify-between px-6 rounded-xl">
-                <input
-                  className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
-                  type="text"
-                  onChange={handleSearch}
-                  value={searchQuery}
-                  placeholder="What class are you posting for?"
-                />
-                <FaSearch className="w-5 h-5" />
-                {searchQuery && (
-                <div className={`w-full mx-auto h-96 bg-white top-16 absolute left-0 z-50 overflow-y-scroll shadow-2xl scrollbar-hide cursor-pointer`}>
-                  {searchQuery &&
-                    filteredClasses.map((classItem) => (
-                    <div onClick={() => {
-                      setSearchQuery(classItem.departmentId);
-                    }}
-                  key={classItem._id}
-                className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-1">
-                  <div className="flex flex-col">
-                    <p className="font-semibold text-lg ml-5">
-                      {classItem.departmentId}
-                    </p>
-                    <p className="italic ml-5">{classItem.name}</p>
-                 </div>
-                </div>
-                ))}
-              </div>
-                )}    
-              </div>
+              <div className="w-full flex justify-start items-center gap-5">
+                  <div className="w-[400px] h-[50px] justify-center text-base text-PrimeColor bg-white flex items-center gap-2 justify-between px-6 rounded-xl relative">
+                      <input
+                          className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
+                          type="text"
+                          onChange={handleSearch}
+                          value={searchQuery}
+                          placeholder="What class are you posting for?"
+                      />
+                      <FaSearch className="w-5 h-5" />
+                      {searchQuery && dropdownVisible && (
+                          <div 
+                              style={{
+                                  position: 'absolute',
+                                  top: '100%', // Aligns right below the input box
+                                  left: 0,
+                                  width: '400px', // Same as the input box
+                                  maxHeight: '384px', // Converted 96 from rem to px
+                                  overflowY: 'scroll',
+                                  backgroundColor: 'white',
+                                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                                  zIndex: 50
+                              }}
+                          >
+                              {filteredClasses.map((classItem) => (
+                                  <div 
+                                      onClick={() => {
+                                          setSearchQuery(classItem.departmentId);
+                                          setDropdownVisible(false); // Hide the dropdown
+                                      }}
+                                      key={classItem._id}
+                                      className="max-w-[600px] h-28 bg-gray-100 mb-3 flex items-center gap-1"
+                                      style={{ cursor: 'pointer' }}
+                                  >
+                                      <div className="flex flex-col">
+                                          <p className="font-semibold text-lg ml-5">
+                                              {classItem.departmentId}
+                                          </p>
+                                          <p className="italic ml-5">{classItem.name}</p>
+                                      </div>
+                                  </div>
+                              ))}
+                          </div>
+                      )}    
+                  </div>
               <div className="w-[200px] h-[50px] justify-center text-base text-PrimeColor bg-white flex items-center gap-2 justify-between px-6 rounded-xl">
                 <input
                   className="flex-1 h-full w-full outline-none placeholder:text-[#C4C4C4] placeholder:text-[14px]"
