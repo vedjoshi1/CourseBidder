@@ -121,6 +121,7 @@ const Profile = () => {
       if (profileData) {
         setClientName(profileData.user.fullName || "Not logged in.");
         setEmail(profileData.user.email || "Not logged in.");
+        setPhone("123-456-789")
       }
       else
       {
@@ -316,7 +317,7 @@ const Profile = () => {
         </div>
         <div className="flex w-[40%] items-start justify-center">
           <div className="flex flex-col max-h-container mt-10">
-            <ProfileCard phoneProp={phone} />
+            <ProfileCard nameProp={clientName} emailProp={email} phoneProp={phone} />
           </div>
           
         </div>

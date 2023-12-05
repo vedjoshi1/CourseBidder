@@ -6,28 +6,7 @@ import { MdAttachEmail } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 
 
-
-
-  function getProfile() {
-    return fetch('/getuser', {
-      method: 'POST',
-      credentials: 'include' 
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to fetch profile');
-      }
-      return response.json();
-    })
-    .then(profileData => {
-      return profileData;
-    })
-    .catch(error => {
-      console.error('Error fetching profile:', error);
-    });
-  }
-
-const ProfileCard = ( { phoneProp }) => {
+const ProfileCard = ( { nameProp, emailProp, phoneProp }) => {
 
       // State variables to store profile data
   const [name, setName] = useState('');
@@ -36,13 +15,10 @@ const ProfileCard = ( { phoneProp }) => {
 
   // Fetch profile data when the component mounts
   useEffect(() => {
-    getProfile().then(profileData => {
-      if (profileData) {
-        setName(profileData.user.fullName || "Not logged in.")
-        setEmail(profileData.user.email || "Not logged in.")
-      }
-      setphoneNumber(phoneProp || "123-456-7890")
-    }, []);
+    setName(nameProp)
+    setEmail(emailProp)
+    setphoneNumber(phoneProp || "123-456-7890")
+
   }); // Empty dependency array means this runs once on mount
 
     return (
