@@ -2,7 +2,7 @@ import React from "react";
 import { ImCross } from "react-icons/im";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   deleteItem,
   decreaseQuantity,
@@ -29,6 +29,27 @@ const getFormattedTime = (timeString) => {
 const ItemCard = ({ item, onRemovingListing}) => {
   const [isRemoved, setRemoved] = useState(false);
   const [buyButtonText, setBuyButtonText] = useState("Still Listed");
+  const [isItemSold, setIsItemSold] = useState(false);
+
+
+  useEffect(() => {
+    // Check if the item is sold when the component mounts
+    checkItemSoldStatus();
+  }, []); // Empty dependency array to run the effect only once
+
+  const checkItemSoldStatus = async () => {
+    try {
+      const apiUrl = 'http://localhost:3001/isitemsold';
+      const response = await axios.post(apiUrl, { email: item.email, id: item.departmentId });
+      setIsItemSold(response.data.isSold);
+      if (response.data.isSold) {
+        setBuyButtonText("Sold");
+      }
+    } catch (error) {
+      console.error("Error checking if item is sold:", error);
+    }
+  };
+
 
   const handleRemoveItem = async () => {
     try {
@@ -37,9 +58,7 @@ const ItemCard = ({ item, onRemovingListing}) => {
       await axios.post("/removeListing", { listingId: item._id.toString() });
       // Dispatch the action to remove the item from the Redux store
       console.log("Removed the class")
-
       onRemovingListing();
-      
       setRemoved(true);
     } catch (error) {
       console.error("Error removing item:", error);
@@ -65,15 +84,21 @@ const ItemCard = ({ item, onRemovingListing}) => {
           ${item.price}
         </div>
         <div className="w-1/5 flex items-center justify-center gap-6 text-lg">
-          <button
-            className="py-2 px-6 bg-green-700 text-white font-semibold uppercase mb-4 hover:bg-green-800 duration-300"
-            disabled={buyButtonText === "Sold"} // Disable the button if the item is already sold
-          >
-            <p className="text-white font-semibold">{buyButtonText}</p>
-          </button>
+        <button
+  className={`py-2 px-6 ${
+    isItemSold ? 'bg-red-500' : 'bg-green-700'
+  } text-white font-semibold uppercase mb-4 hover:${
+    isItemSold ? 'bg-red-600' : 'bg-green-800'
+  } duration-300`}
+  disabled={isItemSold}
+>
+  <p className="text-white font-semibold">
+    {isItemSold ? "Sold" : buyButtonText}
+  </p>
+</button>
         </div>
         <div className="w-1/3 flex items-center font-titleFont font-bold text-lg">
-          <p>{item.email}</p>
+          <p></p>
         </div>
       </div>
     </div>

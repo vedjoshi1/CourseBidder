@@ -36,7 +36,7 @@ const ItemCard = ({ item, uniqueIdentifier }) => {
       const response = await axios.post(apiUrl, { email: item.email, id: item.itemID });
       setBuyButtonText("Sold");
       setIsItemSold(true);
-      alert("Class purchase successful!\nClass Name: " + item.itemID + "\nYour information has been sent to the seller, who will contact you directly.");
+      alert("Class purchase successful!\nClass Name: " + item.itemID + "\nSeller Email: " + item.email);
     } catch (error) {
       alert("Class purchase unsuccessful");
     }
