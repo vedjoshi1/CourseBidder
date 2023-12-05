@@ -26,7 +26,7 @@ const getFormattedTime = (timeString) => {
   return formatTime(timeString);
 };
 
-const ItemCard = ({ item }) => {
+const ItemCard = ({ item, onRemovingListing}) => {
   const [isRemoved, setRemoved] = useState(false);
   const [buyButtonText, setBuyButtonText] = useState("Still Listed");
 
@@ -37,6 +37,9 @@ const ItemCard = ({ item }) => {
       await axios.post("/removeListing", { listingId: item._id.toString() });
       // Dispatch the action to remove the item from the Redux store
       console.log("Removed the class")
+
+      onRemovingListing();
+      
       setRemoved(true);
     } catch (error) {
       console.error("Error removing item:", error);

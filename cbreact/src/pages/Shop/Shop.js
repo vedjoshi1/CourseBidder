@@ -29,21 +29,21 @@ const Shop = () => {
   const [removingAll, setRemovingAll] = useState(false);
   const [numListings, setNumListings] = useState(0)
 
-  const removeAllListings = async() => {
-    try {
-      const apiUrl = "/removeListings";
-      const response = await axios.post(apiUrl);
+  // const removeAllListings = async() => {
+  //   try {
+  //     const apiUrl = "/removeListings";
+  //     const response = await axios.post(apiUrl);
 
-      if (response.status === 201){
-        setRemovingAll(true);
-        console.log("Successfully removed")
-      }
+  //     if (response.status === 201){
+  //       setRemovingAll(true);
+  //       console.log("Successfully removed")
+  //     }
 
-    } catch(error) {
-      console.error("Error in removing listings");
+  //   } catch(error) {
+  //     console.error("Error in removing listings");
 
-    }
-  };
+  //   }
+  // };
 
 
   useEffect(() => {
@@ -75,6 +75,10 @@ const Shop = () => {
   const handleButtonClick = (item) => {
     // Handle button click for the specific item
     console.log('Button clicked for:', item);
+  };
+
+  const handleRemoveListing = () => {
+    setNumListings(prev => prev - 1);
   };
 
   
@@ -111,19 +115,19 @@ const Shop = () => {
           <div className="mt-5">
             {apiData.map((item) => (
               <div key={item._id}>
-                <ItemCard item={item} />
+                <ItemCard item={item} onRemovingListing={handleRemoveListing} />
               </div>
             ))}
 
             
           </div>
 
-          <button
+          {/* <button
             onClick={removeAllListings}
             className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
           >
             Remove All Listings
-          </button>
+          </button> */}
 
 
 
