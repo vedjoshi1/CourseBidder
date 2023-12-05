@@ -635,7 +635,7 @@ app.get("/numListings", async (req, res) => {
 
 app.post("/checkpassword", async (req, res) => {
   let { email, password } = req.body;
-  const user = await userCollection.findOne({ email: email }).lean()
+  const user = await getUserFromCookie(req?.cookies?.session)
 
   if (!user) {
     res.status(404).send({message: "No  User Found"})
