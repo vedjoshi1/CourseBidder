@@ -19,8 +19,8 @@ async function seedDB() {
         await client.connect();
         console.log("Connected correctly to server");
 
-        const chosenClass = "HIST 1B"
-        const numList = 110;
+        const chosenClass = "LIFESCI 7A"
+        const numList = 150;
     
 
         const collection = client.db("CourseBidder").collection("classes");
@@ -41,7 +41,7 @@ async function seedDB() {
                 _id: new ObjectId(),
                 email: faker.internet.email(),
                 departmentId: chosenClass,
-                price: randomIntFromInterval(30,80),
+                price: randomIntFromInterval(60,100),
                 timePosted: faker.date.past(),
             }
 

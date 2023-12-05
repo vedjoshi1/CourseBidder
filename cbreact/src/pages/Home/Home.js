@@ -286,7 +286,7 @@ const ShopPage = ({ itemID }) => {
       /> */}
 
         <h2 className="text-lg text-primeColor font-bold text-center italic">
-          CURRENT AVERAGE PRICE: {avg}
+          CURRENT AVERAGE PRICE: ${avg.toFixed(2)}
         </h2>
     </div>
     
