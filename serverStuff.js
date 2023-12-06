@@ -71,6 +71,7 @@ async function markItemSold(email, objectId) {
           throw new Error("Listing not found");
       }
       foundListing.isSold = true;
+      removeListingFromClass(email, objectId);
       // Save the updated user profile
       const updatedUser = await user.save();
       return updatedUser;
@@ -87,6 +88,38 @@ async function getUserByEmail(email) {
       throw new Error("Error fetching user");
   }
 }
+
+async function removeListingFromClass(email, departmentId) {
+  try {
+    const specificClass = await classCollection.findOne({ departmentId: departmentId });
+    let foundListing = null;
+
+    for (const listing of specificClass.listings) {
+      if (listing.email == email) {
+        foundListing = listing;
+        break;
+      }
+    }
+
+    if (!foundListing) {
+      throw new Error("Listing not found");
+    }
+
+    const updatedListings = specificClass.listings.filter(listing => listing._id.toString() !== foundListing._id.toString());
+
+    // Update the document with the new listings array
+    await classCollection.updateOne(
+      { departmentId: departmentId },
+      { $set: { listings: updatedListings } }
+    );
+
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error deleting class");
+  }
+}
+
+
 
 async function isItemSold(email, objectId) {
   try {
