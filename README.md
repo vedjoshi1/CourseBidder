@@ -8,6 +8,9 @@ Originally developed for UCLA's CS35L course. Current versions exists as a minim
 
 Contributers: Anish Pal, Ved Joshi, Kareem Dibs, Vikram Ramesh, Atij Mahesh
 
+![Home page render](./render1cb.png)
+
+![Class listing render](./render2cb.png)
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
