@@ -97,8 +97,9 @@ const ItemCard = ({ item, onRemovingListing}) => {
   </p>
 </button>
         </div>
-        <div className="w-1/3 flex items-center font-titleFont font-bold text-lg">
-          <p></p>
+        <div 
+        className="w-1/3 flex items-center font-titleFont font-bold text-lg">
+        <p>{getFormattedTime(item.timePosted)}</p>
         </div>
       </div>
     </div>
