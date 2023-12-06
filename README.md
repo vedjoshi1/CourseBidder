@@ -27,10 +27,20 @@ Contributers: Anish Pal, Ved Joshi, Kareem Dibs, Vikram Ramesh, Atij Mahesh
 
 1. Clone the repository and enter it:
 
+    Using HTTPS:
+
    ```shell
-   git clone https://github.com/jtcheng26/ucla-cs35l-bruinsafe.git
-   cd ./ucla-cs35L-bruinsafe
+   git clone https://github.com/vedjoshi1/CourseBidder.git
+   cd ./CourseBidder
     ```
+
+    Using SSH: 
+    ```shell
+   git clone git@github.com:vedjoshi1/CourseBidder.git
+   cd ./CourseBidder
+    ```
+
+
 
 2. Install dependencies by running ``npm install``
 
