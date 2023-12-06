@@ -1,70 +1,88 @@
-# Getting Started with Create React App
+# Welcome to CourseBidder! 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![React Native](https://img.shields.io/badge/React%20Native-v0.64.2-blue.svg)](https://facebook.github.io/react-native/)
 
-## Available Scripts
+As students struggle to enroll in high demand courses at UCLA, a resale market has emerged where individuals buy and sell seats in classes. Morality aside, the market exists and lives unorganized and sometimes inaccessible across various social media platforms. CourseBidder seeks to provide a consolidated landing space for UCLA students to buy and sell their courses, connect buyers to sellers. The site provides statistics and extra functionality regarding the market, with hopes to make the transaction process more streamlined for all parties involved.
 
-In the project directory, you can run:
+Originally developed for UCLA's CS35L course. Current versions exists as a minimum viable product.
 
-### `npm start`
+Contributers: Anish Pal, Ved Joshi, Kareem Dibs, Vikram Ramesh, Atij Mahesh
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Table of Contents
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running](#running)
+- [Features](#features)
+- [Issues](#issues)
 
-### `npm test`
+## Preqrequisites 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js (>= v18.0.0). Install Node [here](https://nodejs.org/en/download).
+- npm (>= v8.3.0)
 
-### `npm run build`
+## Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository and enter it:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```shell
+   git clone https://github.com/jtcheng26/ucla-cs35l-bruinsafe.git
+   cd ./ucla-cs35L-bruinsafe
+    ```
 
-### `npm run eject`
+2. Install dependencies by running ``npm install``
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Setup MongoDB
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Currently running on an Atlas cluster launched concurrently with ''npm run start''
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+To configure the project with your personalized MongoDB Atlas database follow these instructions.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+If you do not have a prexisting MongoDB Atlas Account, create one for free [here](https://www.mongodb.com/cloud/atlas/register?psafe_param=1&utm_content=rlsapostreg&utm_source=google&utm_campaign=search_gs_pl_evergreen_atlas_general_retarget-brand-postreg_gic-null_amers-us-ca_ps-all_desktop_eng_lead&utm_term=&utm_medium=cpc_paid_search&utm_ad=&utm_ad_campaign_id=14383025495&adgroup=129270225274&cq_cmp=14383025495&gad=1&gclid=CjwKCAjwsvujBhAXEiwA_UXnAA71bmfDMgORfSGo3clw4b96pzA9ZFuofWJjCbIJhJtGAmcWKlnG5xoCehgQAvD_BwE).
 
-## Learn More
+Once logged in, navigate to Dashboard. Under the Deployment header, click ``Database``.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Click Green Button with message ``Build a Database``.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Choose which deployment option you would like to use. Shared Clusters are free.
 
-### Code Splitting
+Choose your favorite Cloud Provider and Region. Recommended to stick with the default (AWS).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Press Green Button with message ``Create Cluster``.
 
-### Analyzing the Bundle Size
+While waiting for Cluster Provisioning, navigate to `Security` header and select `Database Access`. Click `Add New Database User`. Fill out form.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Under `Security` header, select `Network Access` Tab. Press `Add IP Address`.
 
-### Making a Progressive Web App
+Select either `Add Current IP Address` or `Allow Access From Anywhere`. Press confirm.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Wait for Cluster Provisioning to finish.
 
-### Advanced Configuration
+Once finished, press `Connect`. Under `Connect to your application`, select `Drivers`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Follow driver installation instructions. Copy your connection string.
+Should be in the format:
+``mongodb+srv://<username>:<password>@cluster0.qan00x8.mongodb.net/?retryWrites=true&w=majority``.
 
-### Deployment
+**Remember to replace &lt;username&gt; and &lt;password&gt; with your login credentials.**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Within CourseBidder repository, navigate to `ServerStuff.js` and change the connection string to your generated string. 
 
-### `npm run build` fails to minify
+### Running
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Run ``npm start`` for a development build of the project running locally. Frontend website runs on ``localhost:3000`` and backend server functionality runs on ``localhost:30001``
+
+## Features
+
+- **Search UCLA Class Database** Use an intelligent autocomplete search to comb through hundreds of courses to find listings. 
+- **Post and Buy Listings:** Set a variable price for your class listing as a seller. As a seller, see tens of listings sorted by price. 
+- **Class Analytics** See all listings through a beautiful scatter plot displaying frequency versus price of listing. Explore other relevant data such as average class selling price, median selling price, and rate at which classes are sold. 
+- **Authenticated Login:** Authenticate users for secure access to the app, as well as preventing dummy listing postings. Uses SHA-256 hash for password protection.
+
+## Issues
+
+For any issues please contact one of the developers:
+
+[Anish Pal](anishmpal@gmail.com)
