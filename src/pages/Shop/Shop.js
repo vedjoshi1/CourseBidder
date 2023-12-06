@@ -24,7 +24,7 @@ function getListings() {
 const Shop = () => {
   const [apiData, setApiData] = useState([]);
   const [removingAll, setRemovingAll] = useState(false);
-  const [numListings, setNumListings] = useState(0)
+  const [numListings, setNumListings] = useState(null)
 
   // const removeAllListings = async() => {
   //   try {
@@ -49,6 +49,10 @@ const Shop = () => {
       {
         setNumListings(profileData.num)
         console.log("Number",profileData.num)
+      }
+      else
+      {
+        setNumListings(0);
       }
     });
   }, []);
@@ -83,7 +87,9 @@ const Shop = () => {
   return (
     <div className="max-w-container mx-auto px-4">
       <Breadcrumbs title="My Course Listings" />
-      {numListings > 0 ? (
+      {numListings === null ? (
+        <p></p>
+      ) : numListings > 0 ? (
       <div className="pb-20">
         {/* Display individual listings with buttons
         {apiData.map((item, index) => (
@@ -112,11 +118,19 @@ const Shop = () => {
           <div className="mt-5">
             {apiData.map((item) => (
               <div key={item._id}>
+                <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col mdl:flex-row justify-center items-center gap-4 pb-20"
+                >
                 <ItemCard item={item} onRemovingListing={handleRemoveListing} />
+                </motion.div>
               </div>
+
             ))}
 
-            
+
           </div>
 
           {/* <button
