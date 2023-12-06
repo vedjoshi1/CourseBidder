@@ -4,9 +4,9 @@
 
 As students struggle to enroll in high demand courses at UCLA, a resale market has emerged where individuals buy and sell seats in classes. Morality aside, the market exists and lives unorganized and sometimes inaccessible across various social media platforms. CourseBidder seeks to provide a consolidated landing space for UCLA students to buy and sell their courses, connect buyers to sellers. The site provides statistics and extra functionality regarding the market, with hopes to make the transaction process more streamlined for all parties involved.
 
-Originally developed for UCLA's CS35L course. Current versions exists as a minimum viable product.
+Originally developed for UCLA's CS35L course. Current version exists as a minimum viable product.
 
-Contributers: Anish Pal, Ved Joshi, Kareem Dibs, Vikram Ramesh, Atij Mahesh
+Contributors: Anish Pal, Ved Joshi, Kareem Dibs, Vikram Ramesh, Atij Mahesh
 
 ![Home page render](./render1cb.png)
 
