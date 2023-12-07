@@ -51,14 +51,12 @@ const Profile = () => {
      // ============= Initial State Start here =============
   const [clientName, setClientName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [checked, setChecked] = useState(false);
   // ============= Initial State End here ===============
   // ============= Error Msg Start here =================
   const [errClientName, setErrClientName] = useState("");
   const [errEmail, setErrEmail] = useState("");
-  const [errPhone, setErrPhone] = useState("");
   const [errPassword, setErrPassword] = useState("");
   // ============= Error Msg End here ===================
   const [successMsg, setSuccessMsg] = useState("");
@@ -70,10 +68,6 @@ const Profile = () => {
   const handleEmail = (e) => {
     setEmail(e.target.value);
     setErrEmail("");
-  };
-  const handlePhone = (e) => {
-    setPhone(e.target.value);
-    setErrPhone("");
   };
   const handlePassword = (e) => {
     setPassword(e.target.value);
@@ -94,7 +88,6 @@ const Profile = () => {
       if (profileData) {
         setClientName(profileData.user.fullName || "Not logged in.");
         setEmail(profileData.user.email || "Not logged in.");
-        setPhone("123-456-789")
       }
       else
       {
@@ -115,9 +108,6 @@ const Profile = () => {
         if (!EmailValidation(email)) {
           setErrEmail("Enter a Valid email");
         }
-      }
-      if (!phone) {
-        setErrPhone("Enter your phone number");
       }
       if (!password) {
         setErrPassword("Must type in a password");
@@ -207,25 +197,6 @@ const Profile = () => {
                     </p>
                   )}
                 </div>
-                {/* Phone Number */}
-                <div className="flex flex-col gap-.5">
-                  <p className="font-titleFont text-base font-semibold text-gray-600">
-                    Phone Number
-                  </p>
-                  <input
-                    onChange={handlePhone}
-                    value={phone}
-                    className="w-full h-8 placeholder:text-sm placeholder:tracking-wide px-4 text-base font-medium placeholder:font-normal rounded-md border-[1px] border-gray-400 outline-none"
-                    type="text"
-                    placeholder="123-456-7890"
-                  />
-                  {errPhone && (
-                    <p className="text-sm text-red-500 font-titleFont font-semibold px-4">
-                      <span className="font-bold italic mr-1">!</span>
-                      {errPhone}
-                    </p>
-                  )}
-                </div>
                 {/* Password */}
                 <div className="flex flex-col gap-.5">
                   <p className="font-titleFont text-base font-semibold text-gray-600">
@@ -279,7 +250,7 @@ const Profile = () => {
         </div>
         <div className="flex w-[40%] items-start justify-center">
           <div className="flex flex-col max-h-container mt-10">
-            <ProfileCard nameProp={clientName} emailProp={email} phoneProp={phone} />
+            <ProfileCard nameProp={clientName} emailProp={email} />
           </div>
           
         </div>
