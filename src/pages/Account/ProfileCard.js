@@ -6,19 +6,16 @@ import { MdAttachEmail } from "react-icons/md";
 import { FaPhoneAlt } from "react-icons/fa";
 
 
-const ProfileCard = ( { nameProp, emailProp, phoneProp }) => {
+const ProfileCard = ( { nameProp, emailProp }) => {
 
       // State variables to store profile data
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setphoneNumber] = useState('');
 
   // Fetch profile data when the component mounts
   useEffect(() => {
     setName(nameProp)
     setEmail(emailProp)
-    setphoneNumber(phoneProp || "123-456-7890")
-
   }); // Empty dependency array means this runs once on mount
 
     return (
@@ -32,11 +29,6 @@ const ProfileCard = ( { nameProp, emailProp, phoneProp }) => {
             <MdAttachEmail />
             <div className=" font-normal text-lg m-1">
                 {email}
-            </div>
-
-            <FaPhoneAlt />
-            <div className="font-normal text-lg m-1">
-                {phoneNumber}
             </div>
             
         </div>
